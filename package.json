@@ -1,0 +1,23 @@
+{
+  "name": "neo4j-decorator",
+  "version": "0.0.1",
+  "description": "A decorator for the Neo4j REST Api",
+  "main": "server.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/awesome-inc/neo4j-decorator.git"
+  },
+  "dependencies": {
+    "node-rest-client": "1.8.0",
+      "xml2js": "0.4.16",
+        "sax": "1.2.1",
+        "xmlbuilder": "4.2.1",
+          "lodash": "4.13.1",
+      "debug": "2.2.0",
+        "ms": "0.7.1",
+    "interpolate": "^0.1.0",
+    "hapi": "8.8.1",
+    "js-yaml": "3.4.5"
+  }
+}
