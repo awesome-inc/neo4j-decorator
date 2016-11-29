@@ -10,14 +10,21 @@
   },
   "dependencies": {
     "node-rest-client": "1.8.0",
-      "xml2js": "0.4.16",
-        "sax": "1.2.1",
-        "xmlbuilder": "4.2.1",
-          "lodash": "4.13.1",
-      "debug": "2.2.0",
-        "ms": "0.7.1",
+    "xml2js": "0.4.16",
+    "sax": "1.2.1",
+    "xmlbuilder": "4.2.1",
+    "lodash": "4.13.1",
+    "debug": "2.2.0",
+    "ms": "0.7.1",
     "interpolate": "^0.1.0",
     "hapi": "8.8.1",
     "js-yaml": "3.4.5"
+  },
+  "devDependencies": {
+    "mocha": "^3.2.0",
+    "should": "^11.1.1"
+  },
+  "scripts": {
+    "test": "mocha"
   }
 }

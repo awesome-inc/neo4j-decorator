@@ -7,12 +7,10 @@ var Client = require('node-rest-client').Client;
 var interpolate = require('interpolate');
 
 var config = loadConfig();
-
 var client = new Client();
 var _myRoute = '';
 
 function loadConfig() {
-  
   var cfg;
   var fileName = path.resolve(__dirname + '/config.yml');
   cfg = yaml.safeLoad(fs.readFileSync(fileName, 'utf8'));
@@ -36,7 +34,7 @@ function registerRoutes(server, path) {
     handler(req, reply) {
       var url = originalUrl(req);
       client.get(url, function (body, response) {
-        body = decorateBody(req, body);
+        body = _decorateBody(req, body);
         reply(body);
       })
       .on('error', function (err) {
@@ -53,7 +51,7 @@ function registerRoutes(server, path) {
       var url = originalUrl(req);
       var args = { data: req.payload, headers: { 'Content-Type': 'application/json' } };
       client.post(url, args, function (body, response) {
-        body = decorateBody(req, body);
+        body = _decorateBody(req, body);
         reply(body);
       });
     }
@@ -67,7 +65,8 @@ function registerRoutes(server, path) {
     var serverUri = server.info.uri.replace('0.0.0.0', hostName);
     config.server_url = serverUri + _myRoute;
   }
-  console.log("'config.server_url' = '%s'", config.server_url);
+  console.log("server_url: '%s'", config.server_url);
+  console.log("neo4j_url: '%s'", config.neo4j_url);
 
   console.log("Registered route '%s'.", _myRoute);
 
@@ -94,11 +93,11 @@ function registerRoutes(server, path) {
   console.log("Registered route '%s'.", configRoute);
 };
 
-function decorateBody(req, json) {
+function _decorateBody(req, json) {
   var src = serverUrl(req);
   var dst = decoratedUrl(req);
   json = replaceUrls(json, src, dst);
-  json = decorateDocument(json);
+  json = _decorateDocument(json);
   return json;
 }
 
@@ -114,23 +113,23 @@ function replaceUrls(json, src, dst) {
   return json;
 }
 
-function decorateDocument(json) {
+function _decorateDocument(json) {
   
   // array of relationships
   if (Array.isArray(json)) {
     for (var x = 0; x < json.length; x++) {
-      json[x] = decorateDocument(json[x]);
+      json[x] = _decorateDocument(json[x]);
     }
     return json;
   }
 
   // cypher result
   if (json.columns && json.data) {
-    json.data = decorateDocument(json.data);
+    json.data = _decorateDocument(json.data);
     return json;
   }
 
-  decorateDocumentFor("_all", json);
+  _decorateDocumentFor("_all", json);
 
   // single node or edge
   if (json.metadata) {
@@ -140,29 +139,29 @@ function decorateDocument(json) {
     var isNode = !isEdge;
 
     if (isNode) {
-      decorateDocumentFor("_node", json);
+      _decorateDocumentFor("_node", json);
     }
 
     if (isEdge) {
-      decorateDocumentFor("_edge", json);
-      decorateDocumentFor(m.type, json);
+      _decorateDocumentFor("_edge", json);
+      _decorateDocumentFor(m.type, json);
     }
 
     if (m.labels) {
       for (var i = 0; i < m.labels.length; i++) {
-        decorateDocumentFor(m.labels[i], json);
+        _decorateDocumentFor(m.labels[i], json);
       }
     }
   }
 
   if (json.data && json.data.type) {
-    decorateDocumentFor(json.data.type, json);
+    _decorateDocumentFor(json.data.type, json);
   }
 
   return json;
 }
 
-function decorateDocumentFor(type, json) {
+function _decorateDocumentFor(type, json) {
   var decorations = getDecorations(type, json);
   if (decorations) {
     deepCombine(json, decorations);
@@ -219,4 +218,10 @@ function originalUrl(req) {
   return serverUrl(req) + req.path.replace(_myRoute, '');
 }
 
-module.exports = registerRoutes;
+module.exports = {
+  registerRoutes: registerRoutes,
+  _getConfig: function() { return config; },
+  _setConfig: function(value) { config = value; },
+  _decorateBody: _decorateBody,
+  _decorateDocument: _decorateDocument
+}
