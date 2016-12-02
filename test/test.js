@@ -54,6 +54,19 @@ describe('graph', function() {
         actual.fancyProperty.should.be.exactly(42);
         actual.data.links[0].title.should.be.exactly("Hello, Michael");
     });
+
+    describe("special chars", function() {
+        ["\\", "/", "{", "}", ",", ";", "[", "]", "ä", "\n"].forEach(function(value, index, array) {
+            it('should not fail on documents containing ' + value, function() {
+                var json = {"columns":["x"],"data":[[{"metadata":{"id":1,"labels":["LBL"]},"data":{"field":"A" + value + "B"}}]]}
+                C._setConfig({"server_url":"http://srv","neo4j_url":"http://n4j","decorate":{"_node":{"data":{"name":"{{doc.data.field}}"}}}});
+
+                var actual = C._decorateBody("foo", json);
+                should(actual).be.ok();
+            });
+        });
+    });
+    
     
   });
 });
