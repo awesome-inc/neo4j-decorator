@@ -184,16 +184,31 @@ function deepCombine(a, b) {
   }
 }
 
+function recursive_replace_on_type(iterable, typestr, callback) {
+  try {
+    for(var idx in iterable) {
+      if(typeof(iterable[idx]) == typestr) {
+        iterable[idx] = callback(iterable[idx]);
+      }
+      else {
+        recursive_replace_on_type(iterable[idx], typestr, callback);
+      }
+    }
+  } catch(e) {
+    // To be expected...
+  }
+}
+
 function getDecorations(type, doc) {
   var js = config.decorate[type]
   if (js && doc) {
-    var tmpl = JSON.stringify(js);
+    var cp = JSON.parse(JSON.stringify(js));
     var data = { doc: doc, config: config};
-    var res = interpolate(tmpl, data, {delimiter: '{{}}'});
-    //console.log('res: %s', res);
-    js = JSON.parse(res);
+    recursive_replace_on_type(cp, "string", (input) => {      
+      return interpolate(input, data, {delimiter: '{{}}'});
+    });
   }
-  return js;
+  return cp;
 }
 
 function serverUrl(req) {
