@@ -96,21 +96,15 @@ function registerRoutes(server, path) {
 function _decorateBody(req, json) {
   var src = serverUrl(req);
   var dst = decoratedUrl(req);
-  json = replaceUrls(json, src, dst);
+  replaceUrls(json, src, dst);
   json = _decorateDocument(json);
   return json;
 }
 
 function replaceUrls(json, src, dst) {
-  for (var x in json) { // eslint-disable-line guard-for-in
-    var v = json[x];
-    if (typeof v === 'string') {
-      json[x] = v.replace(src, dst);
-    } else if (Array.isArray(v) || typeof v === 'object') {
-      json[x] = replaceUrls(v, src, dst);
-    }
-  }
-  return json;
+  recursiveReplace(json, (input) => {
+    return input.replace(src, dst);
+  });
 }
 
 function _decorateDocument(json) {
@@ -184,16 +178,27 @@ function deepCombine(a, b) {
   }
 }
 
+function recursiveReplace(iterable, callback) {
+  for(var idx in iterable) {
+    if(typeof(iterable[idx]) == "string") {
+      iterable[idx] = callback(iterable[idx]);
+    }
+    else if (typeof(iterable) == "object" || Array.isArray(iterable)) {
+      recursiveReplace(iterable[idx], callback);
+    }
+  }
+}
+
 function getDecorations(type, doc) {
   var js = config.decorate[type]
   if (js && doc) {
-    var tmpl = JSON.stringify(js);
+    var cp = JSON.parse(JSON.stringify(js));
     var data = { doc: doc, config: config};
-    var res = interpolate(tmpl, data, {delimiter: '{{}}'});
-    //console.log('res: %s', res);
-    js = JSON.parse(res);
+    recursiveReplace(cp, (input) => {      
+      return interpolate(input, data, {delimiter: '{{}}'});
+    });
   }
-  return js;
+  return cp;
 }
 
 function serverUrl(req) {
