@@ -1,5 +1,5 @@
-var fs   = require('fs');
-var os = require('os'); 
+var fs = require('fs');
+var os = require('os');
 var path = require('path');
 
 var yaml = require('js-yaml');
@@ -34,13 +34,13 @@ function registerRoutes(server, path) {
     handler(req, reply) {
       var url = originalUrl(req);
       client.get(url, function (body, response) {
-        body = _decorateBody(req, body);
-        reply(body);
-      })
-      .on('error', function (err) {
-        reply(err);
-        console.log('something went wrong on the request', err.request.options);
-      });
+          body = _decorateBody(req, body);
+          reply(body);
+        })
+        .on('error', function (err) {
+          reply(err);
+          console.log('something went wrong on the request', err.request.options);
+        });
     }
   });
 
@@ -49,7 +49,12 @@ function registerRoutes(server, path) {
     method: 'POST',
     handler(req, reply) {
       var url = originalUrl(req);
-      var args = { data: req.payload, headers: { 'Content-Type': 'application/json' } };
+      var args = {
+        data: req.payload,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
       client.post(url, args, function (body, response) {
         body = _decorateBody(req, body);
         reply(body);
@@ -108,7 +113,13 @@ function replaceUrls(json, src, dst) {
 }
 
 function _decorateDocument(json) {
-  
+
+  // transactional response
+  if (json.results && Array.isArray(json.results)) {
+    json.results = _decorateDocumentTransactional(json.results);
+    return json;
+  }
+
   // array of relationships
   if (Array.isArray(json)) {
     for (var x = 0; x < json.length; x++) {
@@ -125,7 +136,7 @@ function _decorateDocument(json) {
 
   _decorateDocumentFor("_all", json);
 
-  // single node or edge
+  // single cypher node or edge
   if (json.metadata) {
     var m = json.metadata;
 
@@ -143,20 +154,64 @@ function _decorateDocument(json) {
 
     if (m.labels) {
       for (var i = 0; i < m.labels.length; i++) {
-        _decorateDocumentFor(m.labels[i], json);
+        var nodeType = m.labels[i]
+        _decorateDocumentFor(nodeType, json);
       }
     }
-  }
-
-  if (json.data && json.data.type) {
-    _decorateDocumentFor(json.data.type, json);
   }
 
   return json;
 }
 
-function _decorateDocumentFor(type, json) {
-  var decorations = getDecorations(type, json);
+function _decorateDocumentTransactional(json) {
+
+  // array of results
+  if (Array.isArray(json)) {
+    for (var x = 0; x < json.length; x++) {
+      json[x] = _decorateDocumentTransactional(json[x]);
+    }
+    return json;
+  }
+
+  if (json.data && Array.isArray(json.data)) {
+    json.data = _decorateDocumentTransactional(json.data);
+    return json;
+  }
+
+  if (json.graph) {
+    json.graph = _decorateDocumentTransactional(json.graph)
+    return json;
+  }
+
+  if (json.nodes && Array.isArray(json.nodes)) {
+    for (var x = 0; x < json.nodes.length; x++) {
+      var edge = json.nodes[x];
+
+      if (edge.labels) {
+        for (var i = 0; i < edge.labels.length; i++) {
+          var nodeType = edge.labels[i]
+          _decorateDocumentFor(nodeType, edge, "decorate_transactional");
+        }
+      }
+    }
+  }
+
+  if (json.relationships && Array.isArray(json.relationships)) {
+    for (var x = 0; x < json.relationships.length; x++) {
+      var edge = json.relationships[x];
+
+      if (edge.type) {
+        _decorateDocumentFor(edge.type, edge, "decorate_transactional");
+      }
+    }
+  }
+
+
+  return json;
+}
+
+function _decorateDocumentFor(type, json, hashMapName) {
+  var decorations = getDecorations(type, json, hashMapName);
   if (decorations) {
     deepCombine(json, decorations);
   }
@@ -167,35 +222,39 @@ function deepCombine(a, b) {
     if (a[key]) {
       if (Array.isArray(a[key]) && Array.isArray(b[key])) {
         a[key] = a[key].concat(b[key]);
-      }
-      else {
+      } else {
         deepCombine(a[key], b[key]);
       }
-    }
-    else {
+    } else {
       a[key] = b[key];
     }
   }
 }
 
 function recursiveReplace(iterable, callback) {
-  for(var idx in iterable) {
-    if(typeof(iterable[idx]) == "string") {
+  for (var idx in iterable) {
+    if (typeof (iterable[idx]) == "string") {
       iterable[idx] = callback(iterable[idx]);
-    }
-    else if (typeof(iterable) == "object" || Array.isArray(iterable)) {
+    } else if (typeof (iterable) == "object" || Array.isArray(iterable)) {
       recursiveReplace(iterable[idx], callback);
     }
   }
 }
 
-function getDecorations(type, doc) {
-  var js = config.decorate[type]
+function getDecorations(type, doc, hashMapName) {
+  hashMapName = hashMapName || "decorate";
+  var hashMap = config[hashMapName];
+  var js = hashMap[type]
   if (js && doc) {
     var cp = JSON.parse(JSON.stringify(js));
-    var data = { doc: doc, config: config};
-    recursiveReplace(cp, (input) => {      
-      return interpolate(input, data, {delimiter: '{{}}'});
+    var data = {
+      doc: doc,
+      config: config
+    };
+    recursiveReplace(cp, (input) => {
+      return interpolate(input, data, {
+        delimiter: '{{}}'
+      });
     });
   }
   return cp;
@@ -225,8 +284,12 @@ function originalUrl(req) {
 
 module.exports = {
   registerRoutes: registerRoutes,
-  _getConfig: function() { return config; },
-  _setConfig: function(value) { config = value; },
+  _getConfig: function () {
+    return config;
+  },
+  _setConfig: function (value) {
+    config = value;
+  },
   _decorateBody: _decorateBody,
   _decorateDocument: _decorateDocument
 }
