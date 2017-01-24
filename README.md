@@ -31,3 +31,30 @@ Finally, tune your configuration, place it in `conf\config.yml` and mount it int
 
 		volumes:
 		   - "./decorator/conf/config.yml://usr/src/app/routes/config.yml"
+
+### Examples
+
+#### APOC & Transaction Endpoint
+
+Here is an example config-snippet for the transactional endpoint that works for the APOC beginners example [Calling Procedures within Cypher](https://neo4j-contrib.github.io/neo4j-apoc-procedures/#_calling_procedures_within_cypher):
+
+    decorate_transactional:
+      Person:
+        properties:
+          links:
+            - title: "Google '{{doc.properties.name}}'"
+              href: 'https://www.google.de/search?q={{doc.properties.name}}'
+
+Here's the example request:
+
+    POST http://localhost:3000/api/ai/graph/transaction/commit
+    {
+       "statements" : [
+       {
+          "statement" : "WITH 'https://raw.githubusercontent.com/neo4j-contrib/neo4j-apoc-procedures/master/src/test/resources/person.json' AS url\nCALL apoc.load.json(url) YIELD value as person\nMERGE (p:Person {name:person.name})\nON CREATE SET p.age = person.age, p.children = size(person.children)\nRETURN p",
+            "resultDataContents" : ["row", "graph"]
+          } 
+        ]
+      }
+    }
+
