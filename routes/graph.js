@@ -222,7 +222,11 @@ function deepCombine(a, b) {
     if (a[key]) {
       if (Array.isArray(a[key]) && Array.isArray(b[key])) {
         a[key] = a[key].concat(b[key]);
-      } else {
+      } else if(typeof(b[key]) == "string") {
+        // Overwrite a value with b value
+        a[key] = b[key];
+      }
+      else {
         deepCombine(a[key], b[key]);
       }
     } else {
