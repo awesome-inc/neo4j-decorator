@@ -291,5 +291,6 @@ module.exports = {
     config = value;
   },
   _decorateBody: _decorateBody,
-  _decorateDocument: _decorateDocument
+  _decorateDocument: _decorateDocument,
+  _deepCombine: deepCombine
 }

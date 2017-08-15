@@ -166,4 +166,18 @@ describe('graph', function () {
 
 
     });
+
+    describe('#deepCombine()', function () {
+        it('should not stack overflow when trying to combine two strings', function () {
+            var value_a = {
+                "test": "string1"
+            };
+            var value_b = {
+                "test": "string2"
+            };
+            C._deepCombine(value_a, value_b);
+
+            value_a.test.should.be.exactly("string2");
+        });
+    });
 });
