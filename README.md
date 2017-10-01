@@ -2,7 +2,7 @@
 
 A decorator for the Neo4j REST Api.
 
-[![dockeri.co](http://dockeri.co/image/awesomeinc/neo4j-decorator)](https://hub.docker.com/r/awesomeinc/neo4j-decorator/builds/)
+[![dockeri.co](http://dockeri.co/image/awesomeinc/neo4j-decorator)](https://hub.docker.com/r/awesomeinc/neo4j-decorator/)
 
 [![Build status](https://travis-ci.org/awesome-inc/neo4j-decorator.svg?branch=master)](https://travis-ci.org/awesome-inc/neo4j-decorator/)
 [![GitHub issues](https://img.shields.io/github/issues/awesome-inc/neo4j-decorator.svg "GitHub issues")](https://github.com/awesome-inc/neo4j-decorator)
