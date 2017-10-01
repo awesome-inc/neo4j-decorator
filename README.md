@@ -1,6 +1,6 @@
 # neo4j-decorator
 
-A decorator for the Neo4j REST Api
+A decorator for the Neo4j REST Api.
 
 ## Usage
 
@@ -8,29 +8,35 @@ The most common use case is to add the decorator as a container to your docker p
 
 First, add as submodule
 
-    mkdir decorator
-    cd decorator
-    git submodule add https://github.com/awesome-inc/neo4j-decorator build
+```bash
+mkdir decorator
+cd decorator
+git submodule add https://github.com/awesome-inc/neo4j-decorator build
+```
 
 Then, add the container
 
-	  neo4j:
-        ...
-	  decorator:
-		build:
-		  context: decorator/build
-		  args:
-		    http_proxy: ${http_proxy}
-		    no_proxy: ${no_proxy}
-		ports:
-		   - "3000:3000"
-		links:
-		   - neo4j
+```yml
+  neo4j:
+      ...
+  decorator:
+    build:
+      context: decorator/build
+      args:
+        http_proxy: ${http_proxy}
+        no_proxy: ${no_proxy}
+    ports:
+        - "3000:3000"
+    links:
+        - neo4j
+```
 
 Finally, tune your configuration, place it in `conf\config.yml` and mount it into the container
 
-		volumes:
-		   - "./decorator/conf/config.yml://usr/src/app/routes/config.yml"
+```yml
+    volumes:
+        - "./decorator/conf/config.yml://usr/src/app/routes/config.yml"
+```
 
 ### Examples
 
@@ -38,23 +44,26 @@ Finally, tune your configuration, place it in `conf\config.yml` and mount it int
 
 Here is an example config-snippet for the transactional endpoint that works for the APOC beginners example [Calling Procedures within Cypher](https://neo4j-contrib.github.io/neo4j-apoc-procedures/#_calling_procedures_within_cypher):
 
+```yml
     decorate_transactional:
       Person:
         properties:
           links:
             - title: "Google '{{doc.properties.name}}'"
               href: 'https://www.google.de/search?q={{doc.properties.name}}'
+```
 
 Here's the example request:
 
-    POST http://localhost:3000/api/ai/graph/transaction/commit
+```json
+POST http://localhost:3000/api/ai/graph/transaction/commit
+{
+    "statements" : [
     {
-       "statements" : [
-       {
-          "statement" : "WITH 'https://raw.githubusercontent.com/neo4j-contrib/neo4j-apoc-procedures/master/src/test/resources/person.json' AS url\nCALL apoc.load.json(url) YIELD value as person\nMERGE (p:Person {name:person.name})\nON CREATE SET p.age = person.age, p.children = size(person.children)\nRETURN p",
-            "resultDataContents" : ["row", "graph"]
-          } 
-        ]
+      "statement" : "WITH 'https://raw.githubusercontent.com/neo4j-contrib/neo4j-apoc-procedures/master/src/test/resources/person.json' AS url\nCALL apoc.load.json(url) YIELD value as person\nMERGE (p:Person {name:person.name})\nON CREATE SET p.age = person.age, p.children = size(person.children)\nRETURN p",
+        "resultDataContents" : ["row", "graph"]
       }
-    }
-
+    ]
+  }
+}
+```
