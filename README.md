@@ -2,7 +2,7 @@
 
 A decorator for the Neo4j REST Api.
 
-[![Build status](https://travis-ci.org/awesome-inc/neo4j-decorator/)](https://travis-ci.org/awesome-inc/neo4j-decorator.svg?branch=master)
+[![Build status](https://travis-ci.org/awesome-inc/neo4j-decorator.svg?branch=master)](https://travis-ci.org/awesome-inc/neo4j-decorator/)
 
 ## Usage
 
