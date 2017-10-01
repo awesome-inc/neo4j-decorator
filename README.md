@@ -2,9 +2,9 @@
 
 A decorator for the Neo4j REST Api.
 
-[![Build status](https://travis-ci.org/awesome-inc/neo4j-decorator.svg?branch=master)](https://travis-ci.org/awesome-inc/neo4j-decorator/)
 [![dockeri.co](http://dockeri.co/image/awesomeinc/neo4j-decorator)](https://registry.hub.docker.com/awesomeinc/neo4j-decorator/)
 
+[![Build status](https://travis-ci.org/awesome-inc/neo4j-decorator.svg?branch=master)](https://travis-ci.org/awesome-inc/neo4j-decorator/)
 [![GitHub issues](https://img.shields.io/github/issues/awesome-inc/neo4j-decorator.svg "GitHub issues")](https://github.com/awesome-inc/neo4j-decorator)
 [![GitHub stars](https://img.shields.io/github/stars/awesome-inc/neo4j-decorator "GitHub stars")](https://github.com/awesome-inc/neo4j-decorator)
 
@@ -49,7 +49,7 @@ Finally, tune your configuration, place it in `conf\config.yml` and mount it int
 
 ```yml
     volumes:
-        - "./decorator/conf/config.yml://usr/src/app/routes/config.yml"
+      - "./decorator/conf/config.yml://usr/src/app/routes/config.yml"
 ```
 
 ### Examples
