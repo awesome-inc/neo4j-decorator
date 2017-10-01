@@ -5,3 +5,4 @@ Dockerfile
 .gitignore
 .editorconfig
 .travis.yml
+.vs/

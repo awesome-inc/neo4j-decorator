@@ -3,8 +3,20 @@
 A decorator for the Neo4j REST Api.
 
 [![Build status](https://travis-ci.org/awesome-inc/neo4j-decorator.svg?branch=master)](https://travis-ci.org/awesome-inc/neo4j-decorator/)
+[![dockeri.co](http://dockeri.co/image/awesomeinc/neo4j-decorator)](https://registry.hub.docker.com/awesomeinc/neo4j-decorator/)
 
-## Usage
+[![GitHub issues](https://img.shields.io/github/issues/awesome-inc/neo4j-decorator.svg "GitHub issues")](https://github.com/awesome-inc/neo4j-decorator)
+[![GitHub stars](https://img.shields.io/github/stars/awesome-inc/neo4j-decorator "GitHub stars")](https://github.com/awesome-inc/neo4j-decorator)
+
+## Using the docker image
+
+```bash
+docker run awesomeinc/neo4j-decorator
+```
+
+TODO: Link to neo4j container, mount your config
+
+## Using the source code
 
 The most common use case is to add the decorator as a container to your docker project.
 
