@@ -2,6 +2,8 @@
 
 A decorator for the Neo4j REST Api.
 
+[![Build status](https://travis-ci.org/awesome-inc/neo4j-decorator/)](https://travis-ci.org/awesome-inc/neo4j-decorator.svg?branch=master)
+
 ## Usage
 
 The most common use case is to add the decorator as a container to your docker project.
