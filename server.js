@@ -1,14 +1,10 @@
-const Hapi = require('hapi');
-const server = new Hapi.Server();
-server.connection({ host:'0.0.0.0', port: 3000 });
+const express = require('express');
+const app = express();
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.json()); // for parsing application/json
 
 // Add server routes
-require('./init')(server);
+require('./init')(app);
 
-server.start((err) => {
-
-  if (err) {
-    throw err;
-  }
-  console.log('Server running at:', server.info.uri);
-});
+app.listen(3000, '0.0.0.0', () => console.log('Server listening on port 3000'));

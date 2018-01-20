@@ -14,45 +14,17 @@ A decorator for the Neo4j REST Api.
 docker run awesomeinc/neo4j-decorator
 ```
 
-TODO: Link to neo4j container, mount your config
-
-## Using the source code
-
-The most common use case is to add the decorator as a container to your docker project.
-
-First, add as submodule
-
-```bash
-mkdir decorator
-cd decorator
-git submodule add https://github.com/awesome-inc/neo4j-decorator build
-```
-
-Then, add the container
-
-```yml
-  neo4j:
-      ...
-  decorator:
-    build:
-      context: decorator/build
-      args:
-        http_proxy: ${http_proxy}
-        no_proxy: ${no_proxy}
-    ports:
-        - "3000:3000"
-    links:
-        - neo4j
-```
-
-Finally, tune your configuration, place it in `conf\config.yml` and mount it into the container
-
-```yml
-    volumes:
-      - "./decorator/conf/config.yml://usr/src/app/routes/config.yml"
-```
-
 ### Examples
+
+#### Cypher
+
+An example request to the decorator
+```json
+POST http://localhost:3000/graph/cypher
+{
+  "query": "MATCH (u)-[e]->(v) RETURN u, e, v LIMIT 25"
+}
+```
 
 #### APOC & Transaction Endpoint
 
@@ -70,14 +42,13 @@ Here is an example config-snippet for the transactional endpoint that works for 
 Here's the example request:
 
 ```json
-POST http://localhost:3000/api/ai/graph/transaction/commit
+POST http://localhost:3000/graph/transaction/commit
 {
-    "statements" : [
+  "statements" : [
     {
       "statement" : "WITH 'https://raw.githubusercontent.com/neo4j-contrib/neo4j-apoc-procedures/master/src/test/resources/person.json' AS url\nCALL apoc.load.json(url) YIELD value as person\nMERGE (p:Person {name:person.name})\nON CREATE SET p.age = person.age, p.children = size(person.children)\nRETURN p",
         "resultDataContents" : ["row", "graph"]
-      }
-    ]
-  }
+    }
+  ]
 }
 ```

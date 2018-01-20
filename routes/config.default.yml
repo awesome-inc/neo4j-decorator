@@ -60,3 +60,8 @@ decorate:
       links:
         - title: "Show '{{doc.data.screen_name}}' on Twitter"
           href: 'https://twitter.com/{{doc.data.screen_name}}'
+
+decorate_transactional:
+  _all: {}
+  _node: {}
+  _edge: {}

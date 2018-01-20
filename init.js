@@ -1,5 +1,4 @@
-module.exports = function (server) {
-
+module.exports = function (app) {
   var graph = require('./routes/graph.js');
-  graph.registerRoutes(server);
+  graph.registerRoutes(app);
 };

@@ -4,7 +4,7 @@ var path = require('path');
 
 var yaml = require('js-yaml');
 var Client = require('node-rest-client').Client;
-var interpolate = require('interpolate');
+var nunjucks = require('nunjucks');
 
 var config = loadConfig();
 var client = new Client();
@@ -24,76 +24,55 @@ function saveConfig() {
   console.log("Wrote config to '%s'.", fileName);
 }
 
-function registerRoutes(server, path) {
+function registerRoutes(app, path) {
   // node does not support default parameters
-  path = path || '/api/ai/{graph*}';
+  path = path || '/graph*';
 
-  server.route({
-    path: path,
-    method: 'GET',
-    handler(req, reply) {
-      var url = originalUrl(req);
-      client.get(url, function (body, response) {
-          body = _decorateBody(req, body);
-          reply(body);
-        })
-        .on('error', function (err) {
-          reply(err);
-          console.log('something went wrong on the request', err.request.options);
-        });
-    }
+  app.get(path, function(req, res) {
+    var url = originalUrl(req);
+    client.get(url, function (body, response) {
+        body = _decorateBody(req, body);
+        res.send(body);
+      })
+      .on('error', function (err) {
+        res.send(err);
+        console.log('something went wrong on the request', err.request.options);
+      });
   });
 
-  server.route({
-    path: path,
-    method: 'POST',
-    handler(req, reply) {
-      var url = originalUrl(req);
-      var args = {
-        data: req.payload,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      };
-      client.post(url, args, function (body, response) {
-        body = _decorateBody(req, body);
-        reply(body);
-      });
-    }
+  app.post(path, function(req, res) {
+    var url = originalUrl(req);
+    var args = {
+      data: req.body,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+    client.post(url, args, function (body, response) {
+      body = _decorateBody(req, body);
+      res.send(body);
+    });
   });
 
   _myRoute = path.replace(new RegExp('[{*}]', 'gi'), '');
 
-  if (config.server_url == null) {
-    console.log("'config.server_url' not configured! Deriving from Hapi / os.hostname() ...");
-    var hostName = os.hostname();
-    var serverUri = server.info.uri.replace('0.0.0.0', hostName);
-    config.server_url = serverUri + _myRoute;
-  }
   console.log("server_url: '%s'", config.server_url);
   console.log("neo4j_url: '%s'", config.neo4j_url);
 
   console.log("Registered route '%s'.", _myRoute);
 
-  var configRoute = '/api/ai/.config';
-  server.route({
-    path: configRoute,
-    method: 'GET',
-    handler(req, reply) {
-      reply(config);
-    }
+  var configRoute = '/config';
+  app.get(configRoute, function(req, res) {
+    res.send(config);
   });
 
-  server.route({
-    path: configRoute,
-    method: 'PUT',
-    handler(req, reply) {
-      // TODO: parse/validate
-      config = req.payload;
-      saveConfig();
-      reply('ok');
-    }
+  app.put(configRoute, function(req, res) {
+    // TODO: parse/validate
+    config = req.payload;
+    saveConfig();
+    re.send('ok');
   });
+
 
   console.log("Registered route '%s'.", configRoute);
 };
@@ -253,14 +232,9 @@ function getDecorations(type, doc, hashMapName) {
   var js = hashMap[type]
   if (js && doc) {
     var cp = JSON.parse(JSON.stringify(js));
-    var data = {
-      doc: doc,
-      config: config
-    };
+    var context = { doc: doc, config: config };
     recursiveReplace(cp, (input) => {
-      return interpolate(input, data, {
-        delimiter: '{{}}'
-      });
+      return nunjucks.renderString(input, context);
     });
   }
   return cp;
