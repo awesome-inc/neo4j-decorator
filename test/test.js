@@ -1,4 +1,4 @@
-var should = require('should');
+var should = require('chai').should();
 
 var C = require('../routes/graph.js');
 
@@ -25,7 +25,7 @@ describe('graph', function () {
 
             C._setConfig(config);
             var actual = C._decorateBody("foo", json);
-            actual.self.should.be.exactly("http://graph/node/0");
+            actual.self.should.equal("http://graph/node/0");
         });
 
         it('should add interpolated data', function () {
@@ -58,8 +58,8 @@ describe('graph', function () {
 
             C._setConfig(config);
             var actual = C._decorateBody("foo", json);
-            actual.fancyProperty.should.be.exactly(42);
-            actual.data.links[0].title.should.be.exactly("Hello, Michael");
+            actual.fancyProperty.should.equal(42);
+            actual.data.links[0].title.should.equal("Hello, Michael");
         });
 
         describe("special chars", function () {
@@ -92,7 +92,7 @@ describe('graph', function () {
                     });
 
                     var actual = C._decorateBody("foo", json);
-                    should(actual).be.ok();
+                    actual.should.be.ok;
                 });
             });
         });
@@ -155,16 +155,14 @@ describe('graph', function () {
                 C._setConfig(config);
                 var actualGraph = C._decorateBody("foo", json).results[0].data[0].graph;
                 var actualNode = actualGraph.nodes[0];
-                actualNode.fancyProperty.should.be.exactly(42);
-                actualNode.properties.links[0].title.should.be.exactly("Hello, Michael");
+                actualNode.fancyProperty.should.equal(42);
+                actualNode.properties.links[0].title.should.equal("Hello, Michael");
 
                 var actualEdge = actualGraph.relationships[0];
-                actualEdge.fancyEdgeProperty.should.be.exactly(43);
-                actualEdge.properties.links[0].title.should.be.exactly("Description: Describe Me");
+                actualEdge.fancyEdgeProperty.should.equal(43);
+                actualEdge.properties.links[0].title.should.equal("Description: Describe Me");
             });
         });
-
-
     });
 
     describe('#deepCombine()', function () {
@@ -177,7 +175,7 @@ describe('graph', function () {
             };
             C._deepCombine(value_a, value_b);
 
-            value_a.test.should.be.exactly("string2");
+            value_a.test.should.equal("string2");
         });
     });
 });
