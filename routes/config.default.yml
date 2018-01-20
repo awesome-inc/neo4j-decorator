@@ -1,4 +1,4 @@
-server_url: 'http://localhost:3000/api/ai/graph'
+server_url: 'http://localhost:3000/graph'
 neo4j_url: 'http://localhost:7474/db/data'
 decorate:
   _all:
