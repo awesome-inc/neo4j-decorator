@@ -183,6 +183,8 @@ function _decorateDocumentTransactional(json) {
     return json;
   }
 
+  // TODO: decorate _all, _node, _edge
+
   if (json.nodes && Array.isArray(json.nodes)) {
     for (var x = 0; x < json.nodes.length; x++) {
       var edge = json.nodes[x];
