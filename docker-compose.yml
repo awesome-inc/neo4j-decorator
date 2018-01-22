@@ -1,18 +1,9 @@
 version: '3'
+
+volumes:
+  neo4j-volume:   # neo4j data
+
 services:
-  neo4j:
-    image: neo4j:3.3.1
-    # volumes:
-    #   - neo4-volume:/data
-    ports:
-      - "7474:7474"
-      - "7473:7473"
-      - "7687:7687"
-    environment:
-      NEO4J_AUTH: none
-      http_proxy: ${http_proxy}
-      https_proxy: ${https_proxy}
-      no_proxy: ${no_proxy}
   decorator:
     build:
       context: ./
@@ -24,3 +15,26 @@ services:
        - "3000:3000"
     depends_on:
        - neo4j
+    volumes:
+      - "./routes/config.yml:/usr/src/app/routes/config.yml"
+
+  neo4j:
+    build:
+      context: ./neo4j
+      args:
+        http_proxy: ${http_proxy}
+        https_proxy: ${https_proxy}
+        no_proxy: ${no_proxy}
+    volumes:
+      - neo4j-volume:/data
+      - "./neo4j/conf:/conf"
+      - "./neo4j/conf:/var/lib/neo4j/conf"
+    ports:
+      - "7474:7474"
+      - "7473:7473"
+      - "7687:7687"
+    environment:
+      NEO4J_AUTH: none
+      http_proxy: ${http_proxy}
+      https_proxy: ${https_proxy}
+      no_proxy: ${no_proxy}

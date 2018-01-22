@@ -6,3 +6,4 @@ Dockerfile
 .editorconfig
 .travis.yml
 .vs/
+neo4j/*
