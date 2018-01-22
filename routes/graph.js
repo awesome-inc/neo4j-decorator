@@ -232,7 +232,7 @@ function getDecorations(type, doc, hashMapName) {
   var js = hashMap[type]
   if (js && doc) {
     var cp = JSON.parse(JSON.stringify(js));
-    var context = { doc: doc, config: config };
+    var context = { config: config, doc: doc, env: process.env };
     recursiveReplace(cp, (input) => {
       return nunjucks.renderString(input, context);
     });

@@ -57,7 +57,7 @@ describe('graph', function () {
       actual.data.links[0].title.should.equal("Hello, Michael");
     });
 
-    it('should allow filters (nunjucks)', function () {
+    it('should allow filters (nunjucks) and env', function () {
       var json = {
         metadata: { id: 0, labels: ["Person"] },
         data: { name: "Michael" }
@@ -74,15 +74,20 @@ describe('graph', function () {
               links: [{
                 title: "Hello, {{ doc.data.name | replace(\"Michael\", \"Tom\") }}",
                 href: 'http://some/uri'
+              }, {
+                title: "Hello, {{ env.foo }}",
+                href: 'http://some/uri'
               }]
             }
           }
         }
       }
       C._setConfig(config);
+      process.env.foo = "foo"
       var actual = C._decorateBody("foo", json);
       actual.fancyProperty.should.equal(42);
       actual.data.links[0].title.should.equal("Hello, Tom");
+      actual.data.links[1].title.should.equal(`Hello, ${process.env.foo}`);
     });
 
     describe("special chars", function () {
