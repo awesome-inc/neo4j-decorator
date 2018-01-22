@@ -1,7 +1,7 @@
 server_url: 'http://localhost:3000/graph'
 neo4j_url: 'http://neo4j:7474/db/data'
 decorate:
-  _all:
+  _all: {}
   _node:
     data:
       links:
@@ -18,51 +18,18 @@ decorate:
           method: 'POST'
           body:
             query: 'MATCH (u)-[e]-(v) WHERE ID(e)={{doc.metadata.id}} RETURN u,e,v'
-  Link:
+  Person:
     data:
       links:
-        - title: Open
-          href: '{{doc.data.href}}'
-  Event:
-    data:
-      links:
-        - title: Tweet
-          href: 'https://twitter.com'
-        - title: e-mail Event
-          href: 'mailto://?to=&subject=mailto%20with%20examples&body=http://en.wikipedia.org/wiki/Mailto'
-  Category:
-    data:
-      links:
-        - title: "Google '{{doc.data.name}}'"
+        - title: "Google '{{doc.data.name}}'..."
           href: 'https://www.google.de/search?q={{doc.data.name}}'
-  Name:
-    data:
-      links:
-        - title: "Google '{{doc.data.name}}'"
-          href: 'https://www.google.de/search?q={{doc.data.name}}'
-  Location:
-    data:
-      links:
-        - title: "Show '{{doc.data.name}}' on map"
-          href: 'http://maps.google.com/?q={{doc.data.name}}'
-  TAGGED:
-    data:
-      links:
-        - title: Google Tag
-          href: 'https://www.google.com/'
-  LINKS_TO:
-    data:
-      links:
-        - title: Open Link
-          href: '{{ value.href }}'
-  User:
-    data:
-      links:
-        - title: "Show '{{doc.data.screen_name}}' on Twitter"
-          href: 'https://twitter.com/{{doc.data.screen_name}}'
-
 
 decorate_transactional:
   _all: {}
   _node: {}
   _edge: {}
+  Person:
+    properties:
+      links:
+        - title: "Google '{{doc.properties.name}}'"
+          href: 'https://www.google.de/search?q={{doc.properties.name}}'
