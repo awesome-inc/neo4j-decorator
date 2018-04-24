@@ -11,6 +11,9 @@ services:
         http_proxy: ${http_proxy}
         https_proxy: ${https_proxy}
         no_proxy: ${no_proxy}
+    environment:
+      server_url: ${server_url:-localhost}
+      neo4j_url: ${neo4j_url:-neo4j}
     ports:
        - "3000:3000"
     depends_on:

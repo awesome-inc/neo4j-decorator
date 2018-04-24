@@ -76,6 +76,9 @@ where
 - `doc` is the current document (node or edge)
 - `env` is the process environment (on the server).
 
+#### Special Case
+The `server_url` and `neo4j_url` itself can also be interpolated via use of environment variables `server_url` and `neo4j_url`, which will default to 'localhost' and 'neo4j'.
+
 ## Examples
 
 ### Cypher
