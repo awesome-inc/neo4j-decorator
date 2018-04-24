@@ -7,7 +7,7 @@ COPY package.json yarn.lock /usr/src/app/
 
 ARG http_proxy=
 ARG https_proxy=
-RUN yarn config set proxy ${http_proxy}} &&\
+RUN yarn config set proxy ${http_proxy} &&\
   yarn config set https-proxy ${https_proxy}
 RUN yarn
 
