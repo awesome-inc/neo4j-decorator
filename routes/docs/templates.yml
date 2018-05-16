@@ -1,0 +1,2 @@
+- name: Get first 25 nodes
+  template: MATCH (n) RETURN n LIMIT 25

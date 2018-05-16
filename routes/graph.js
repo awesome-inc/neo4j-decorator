@@ -73,9 +73,8 @@ function registerRoutes(app, path) {
     // TODO: parse/validate
     config = req.payload;
     saveConfig();
-    re.send('ok');
+    res.send('ok');
   });
-
 
   console.log("Registered route '%s'.", configRoute);
 };

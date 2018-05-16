@@ -79,6 +79,10 @@ where
 #### Special Case
 The `server_url` and `neo4j_url` itself can also be interpolated via use of environment variables `server_url` and `neo4j_url`, which will default to 'localhost' and 'neo4j'.
 
+## Docs
+
+It is possible to store and retrieve custom documents, e.g. in order to store custom configurations, templates for Cypher queries, etc. Documents can be retrieved via `GET` from `<decorator-url>/docs/:doc` with **:doc** being the filename. The same URL can be used in conjunction with `PUT` to store documents.
+
 ## Examples
 
 ### Cypher
