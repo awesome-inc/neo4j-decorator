@@ -71,7 +71,7 @@ function registerRoutes(app, path) {
 
   app.put(configRoute, function(req, res) {
     // TODO: parse/validate
-    config = req.payload;
+    config = req.body;
     saveConfig();
     res.send('ok');
   });

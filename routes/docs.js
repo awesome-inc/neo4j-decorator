@@ -35,7 +35,7 @@ function registerRoutes(app, path) {
 
   app.put(`${documentsRoute}/:doc`, function(req, res) {
     const doc = req.params.doc;
-    const document = req.payload;
+    const document = req.body;
     saveDocument(document, toYmlFilename(doc));
     res.send('ok');
   });
