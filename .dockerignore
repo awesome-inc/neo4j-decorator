@@ -7,3 +7,4 @@ Dockerfile
 .travis.yml
 .vs/
 neo4j/*
+hooks/*

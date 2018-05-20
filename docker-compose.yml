@@ -20,6 +20,7 @@ services:
        - neo4j
     volumes:
       - "./routes/config.yml:/usr/src/app/routes/config.yml"
+      - "./routes/docs/:/usr/src/app/routes/docs/"
 
   neo4j:
     build:
@@ -30,8 +31,6 @@ services:
         no_proxy: ${no_proxy}
     volumes:
       - neo4j-volume:/data
-      - "./neo4j/conf:/conf"
-      - "./neo4j/conf:/var/lib/neo4j/conf"
     ports:
       - "7474:7474"
       - "7473:7473"
