@@ -1,4 +1,4 @@
-FROM node:9.11.1-alpine
+FROM node:10.1.0-alpine
 
 # cf.: 
 # - https://docs.docker.com/docker-cloud/builds/advanced/#environment-variables-for-building-and-testing
