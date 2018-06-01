@@ -1,12 +1,12 @@
 # neo4j-decorator
 
+[![Build status](https://travis-ci.org/awesome-inc/neo4j-decorator.svg?branch=master)](https://travis-ci.org/awesome-inc/neo4j-decorator/)
+[![GitHub issues](https://img.shields.io/github/issues/awesome-inc/neo4j-decorator.svg "GitHub issues")](https://github.com/awesome-inc/neo4j-decorator)
+[![GitHub stars](https://img.shields.io/github/stars/awesome-inc/neo4j-decorator.svg "GitHub stars")](https://github.com/awesome-inc/neo4j-decorator)
+
 A decorator for the Neo4j REST Api.
 
 [![dockeri.co](http://dockeri.co/image/awesomeinc/neo4j-decorator)](https://hub.docker.com/r/awesomeinc/neo4j-decorator/)
-
-[![Build status](https://travis-ci.org/awesome-inc/neo4j-decorator.svg?branch=master)](https://travis-ci.org/awesome-inc/neo4j-decorator/)
-[![GitHub issues](https://img.shields.io/github/issues/awesome-inc/neo4j-decorator.svg "GitHub issues")](https://github.com/awesome-inc/neo4j-decorator)
-[![GitHub stars](https://img.shields.io/github/stars/awesome-inc/neo4j-decorator "GitHub stars")](https://github.com/awesome-inc/neo4j-decorator)
 
 ## Using the docker image
 
