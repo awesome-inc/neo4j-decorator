@@ -15,8 +15,12 @@ function loadConfig() {
   var fileName = path.resolve(__dirname + '/config.yml');
   cfg = yaml.safeLoad(fs.readFileSync(fileName, 'utf8'));
   let context = { env: process.env };
-  cfg.server_url = nunjucks.renderString(cfg.server_url, context);
-  cfg.neo4j_url = nunjucks.renderString(cfg.neo4j_url, context);
+
+  // Interpolate all URLs
+  Object.keys(cfg)
+    .filter(key => key.endsWith('_url'))
+    .forEach(url => cfg[url] = nunjucks.renderString(cfg[url], context));
+
   console.log("Loaded config from '%s'.", fileName);
   return cfg;
 }
