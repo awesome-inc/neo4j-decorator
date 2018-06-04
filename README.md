@@ -77,7 +77,7 @@ where
 - `env` is the process environment (on the server).
 
 #### Special Case
-The `server_url` and `neo4j_url` itself can also be interpolated via use of environment variables `server_url` and `neo4j_url`, which will default to 'localhost' and 'neo4j'.
+All top-level keys from the `config.yml` that end in `_url` can also be interpolated.
 
 ## Docs
 
