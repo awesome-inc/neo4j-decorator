@@ -18,11 +18,6 @@ decorate:
           method: 'POST'
           body:
             query: 'MATCH (u)-[e]-(v) WHERE ID(e)={{doc.metadata.id}} RETURN u,e,v'
-  Person:
-    data:
-      links:
-        - title: "Google '{{doc.data.name}}'..."
-          href: 'https://www.google.de/search?q={{doc.data.name}}'
 
 decorate_transactional:
   _all: {}

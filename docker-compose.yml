@@ -14,13 +14,15 @@ services:
     environment:
       server_url: ${server_url:-localhost}
       neo4j_url: ${neo4j_url:-neo4j}
+      path_to_config: ${path_to_config:-/var/decorator}
     ports:
        - "3000:3000"
     depends_on:
        - neo4j
     volumes:
-      - "./routes/config.yml:/usr/src/app/routes/config.yml"
+      - "./config.yml:/usr/src/app/config.yml"
       - "./routes/docs/:/usr/src/app/routes/docs/"
+      - "./conf.d/:/var/decorator/conf.d/"
 
   neo4j:
     build:

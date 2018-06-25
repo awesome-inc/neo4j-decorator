@@ -1,54 +1,27 @@
-var fs = require('fs');
-var path = require('path');
-
-var yaml = require('js-yaml');
 var Client = require('node-rest-client').Client;
 var nunjucks = require('nunjucks');
-
-var config = loadConfig();
 var client = new Client();
+
 var _myRoute = '';
-
-function loadConfig() {
-  var cfg;
-  var fileName = path.resolve(__dirname + '/config.yml');
-  cfg = yaml.safeLoad(fs.readFileSync(fileName, 'utf8'));
-  let context = {
-    env: process.env
-  };
-
-  // Interpolate all URLs
-  Object.keys(cfg)
-    .filter(key => key.endsWith('_url'))
-    .forEach(url => cfg[url] = nunjucks.renderString(cfg[url], context));
-
-  console.log("Loaded config from '%s'.", fileName);
-  return cfg;
-}
-
-function saveConfig() {
-  var fileName = path.resolve(__dirname + '/config.yml');
-  fs.writeFileSync(fileName, yaml.dump(config), 'utf8');
-  console.log("Wrote config to '%s'.", fileName);
-}
+const CONF = require('./config');
 
 function registerRoutes(app, path) {
   // node does not support default parameters
   path = path || '/graph*';
 
-  app.get(path, function (req, res) {
+  app.get(path, (req, res) => {
     var url = originalUrl(req);
-    client.get(url, function (body, _response) {
+    client.get(url, (body, _response) => {
         body = _decorateBody(req, body);
         res.send(body);
       })
-      .on('error', function (err) {
+      .on('error', (err) => {
         res.send(err);
         console.log('something went wrong on the request', err.request.options);
       });
   });
 
-  app.post(path, function (req, res) {
+  app.post(path, (req, res) => {
     var url = originalUrl(req);
     var args = {
       data: req.body,
@@ -56,7 +29,7 @@ function registerRoutes(app, path) {
         'Content-Type': 'application/json'
       }
     };
-    client.post(url, args, function (body, _response) {
+    client.post(url, args, (body, _response) => {
       body = _decorateBody(req, body);
       res.send(body);
     });
@@ -64,24 +37,10 @@ function registerRoutes(app, path) {
 
   _myRoute = path.replace(new RegExp('[{*}]', 'gi'), '');
 
-  console.log("server_url: '%s'", config.server_url);
-  console.log("neo4j_url: '%s'", config.neo4j_url);
+  console.log("server_url: '%s'", CONF._getConfig().server_url);
+  console.log("neo4j_url: '%s'", CONF._getConfig().neo4j_url);
 
   console.log("Registered route '%s'.", _myRoute);
-
-  var configRoute = '/config';
-  app.get(configRoute, function (req, res) {
-    res.send(config);
-  });
-
-  app.put(configRoute, function (req, res) {
-    // TODO: parse/validate
-    config = req.body;
-    saveConfig();
-    res.send('ok');
-  });
-
-  console.log("Registered route '%s'.", configRoute);
 };
 
 function _decorateBody(req, json) {
@@ -194,7 +153,6 @@ function _decorateDocumentTransactional(json) {
     }
   }
 
-
   return json;
 }
 
@@ -234,12 +192,12 @@ function recursiveReplace(iterable, callback) {
 
 function getDecorations(type, doc, hashMapName) {
   hashMapName = hashMapName || "decorate";
-  var hashMap = config[hashMapName];
+  var hashMap = CONF._getConfig()[hashMapName];
   var js = hashMap[type]
   if (js && doc) {
     var cp = JSON.parse(JSON.stringify(js));
     var context = {
-      config: config,
+      config: CONF._getConfig(),
       doc: doc,
       env: process.env
     };
@@ -251,11 +209,11 @@ function getDecorations(type, doc, hashMapName) {
 }
 
 function serverUrl(req) {
-  return config.neo4j_url || getServerUrl(req);
+  return CONF._getConfig().neo4j_url || getServerUrl(req);
 }
 
 function decoratedUrl(req) {
-  return config.server_url || getDecoratedUrl(req);
+  return CONF._getConfig().server_url || getDecoratedUrl(req);
 }
 
 function getDecoratedUrl(req) {
@@ -274,12 +232,6 @@ function originalUrl(req) {
 
 module.exports = {
   registerRoutes: registerRoutes,
-  _getConfig: function () {
-    return config;
-  },
-  _setConfig: function (value) {
-    config = value;
-  },
   _decorateBody: _decorateBody,
   _decorateDocument: _decorateDocument,
   _deepCombine: deepCombine

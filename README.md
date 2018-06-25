@@ -14,11 +14,15 @@ A decorator for the Neo4j REST Api.
 docker run awesomeinc/neo4j-decorator
 ```
 
-Adjust your `config.yml` and mount it into the container, e.g. in your `docker-compose.yml`
+Adjust your `config.yml` and mount it into the container, e.g. in your `docker-compose.yml`. You can also separate your config into different files. Just mount them into `/var/decorator/conf.d/`. You can change the location via the environment variable `path_to_config`.
 
 ```yml
     volumes:
-       - "./decorator/config.yml:/usr/src/app/routes/config.yml"
+       - "./decorator/config.yml:/usr/src/app/config.yml"
+       - "./decorator/conf.d/:/var/decorator/conf.d/"
+    ...
+    environment:
+      path_to_config: "var/decorator"
 ```
 
 ## Configuration

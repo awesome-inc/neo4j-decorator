@@ -1,0 +1,6 @@
+decorate:
+  Person:
+    data:
+      links:
+        - title: "Google '{{doc.data.name}}'..."
+          href: 'https://www.google.de/search?q={{doc.data.name}}'

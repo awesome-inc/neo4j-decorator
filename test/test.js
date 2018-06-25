@@ -1,4 +1,18 @@
-var C = require('../routes/graph.js');
+var GRAPH = require('../routes/graph');
+var CONFIG = require('../routes/config');
+
+describe('app', () => {
+  test('should load config', () => {
+    const conf = CONFIG._loadConfig();
+    // Assert data of top-level config is still present
+    expect(conf.decorate._node).toBeDefined();
+    expect(conf.decorate._edge).toBeDefined();
+    // Assert data of configs from './conf.d' is deep-merged into config
+    const person = conf.decorate.Person;
+    expect(person).toBeDefined();
+    expect(person.data.links.length).toBe(2);
+  });
+});
 
 describe('graph', () => {
   describe('#decorateBody()', () => {
@@ -21,8 +35,8 @@ describe('graph', () => {
         }
       }
 
-      C._setConfig(config);
-      var actual = C._decorateBody("foo", json);
+      CONFIG._setConfig(config);
+      var actual = GRAPH._decorateBody("foo", json);
       expect(actual.self).toBe("http://graph/node/0");
     });
 
@@ -54,8 +68,8 @@ describe('graph', () => {
         }
       }
 
-      C._setConfig(config);
-      var actual = C._decorateBody("foo", json);
+      CONFIG._setConfig(config);
+      var actual = GRAPH._decorateBody("foo", json);
       expect(actual.fancyProperty).toBe(42);
       expect(actual.data.links[0].title).toBe("Hello, Michael");
     });
@@ -90,9 +104,9 @@ describe('graph', () => {
           }
         }
       }
-      C._setConfig(config);
+      CONFIG._setConfig(config);
       process.env.foo = "foo"
-      var actual = C._decorateBody("foo", json);
+      var actual = GRAPH._decorateBody("foo", json);
       expect(actual.fancyProperty).toBe(42);
       expect(actual.data.links[0].title).toBe("Hello, Tom");
       expect(actual.data.links[1].title).toBe(`Hello, ${process.env.foo}`);
@@ -115,7 +129,7 @@ describe('graph', () => {
               }]
             ]
           }
-          C._setConfig({
+          CONFIG._setConfig({
             "server_url": "http://srv",
             "neo4j_url": "http://n4j",
             "decorate": {
@@ -127,7 +141,7 @@ describe('graph', () => {
             }
           });
 
-          var actual = C._decorateBody("foo", json);
+          var actual = GRAPH._decorateBody("foo", json);
           expect(actual).toBeTruthy();
         });
       });
@@ -188,8 +202,8 @@ describe('graph', () => {
           }
         }
 
-        C._setConfig(config);
-        var actualGraph = C._decorateBody("foo", json).results[0].data[0].graph;
+        CONFIG._setConfig(config);
+        var actualGraph = GRAPH._decorateBody("foo", json).results[0].data[0].graph;
         var actualNode = actualGraph.nodes[0];
         expect(actualNode.fancyProperty).toBe(42);
         expect(actualNode.properties.links[0].title).toBe("Hello, Michael");
@@ -209,7 +223,7 @@ describe('graph', () => {
       var value_b = {
         "test": "string2"
       };
-      C._deepCombine(value_a, value_b);
+      GRAPH._deepCombine(value_a, value_b);
 
       expect(value_a.test).toBe("string2");
     });

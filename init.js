@@ -1,7 +1,9 @@
 module.exports = (app) => {
-  var graph = require('./routes/graph.js');
-  var docs = require('./routes/docs.js');
+  var config = require('./routes/config')
+  var graph = require('./routes/graph');
+  var docs = require('./routes/docs');
 
   docs.registerRoutes(app);
   graph.registerRoutes(app);
+  config.registerRoutes(app);
 };

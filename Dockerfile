@@ -1,6 +1,6 @@
 FROM node:10.1.0-alpine
 
-# cf.: 
+# cf.:
 # - https://docs.docker.com/docker-cloud/builds/advanced/#environment-variables-for-building-and-testing
 # - https://medium.com/microscaling-systems/labelling-automated-builds-on-docker-hub-f3d073fb8e1
 # - https://docs.docker.com/docker-cloud/builds/advanced/#override-build-test-or-push-commands
@@ -9,7 +9,7 @@ ARG VCS_REF
 ARG DOCKER_TAG
 
 # cf.: http://label-schema.org/rc1/
-LABEL author="Awesome Incremented <marcel.koertgen@gmail.com>"\ 
+LABEL author="Awesome Incremented <marcel.koertgen@gmail.com>"\
   org.label-schema.build-date="${BUILD_DATE}" \
   org.label-schema.name="awesomeinc/neo4j-decorator" \
   org.label-schema.description="A decorator for the Neo4j REST Api." \
@@ -33,6 +33,9 @@ ARG https_proxy=
 RUN yarn
 
 COPY . /usr/src/app
+
+COPY conf.d /var/decorator
+
 RUN yarn test
 
 EXPOSE 3000
