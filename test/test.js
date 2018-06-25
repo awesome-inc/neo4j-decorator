@@ -1,5 +1,3 @@
-var should = require('chai').should();
-
 var C = require('../routes/graph.js');
 
 describe('graph', function () {
@@ -25,7 +23,7 @@ describe('graph', function () {
 
       C._setConfig(config);
       var actual = C._decorateBody("foo", json);
-      actual.self.should.equal("http://graph/node/0");
+      expect(actual.self).toBe("http://graph/node/0");
     });
 
     it('should add interpolated data', function () {
@@ -53,8 +51,8 @@ describe('graph', function () {
 
       C._setConfig(config);
       var actual = C._decorateBody("foo", json);
-      actual.fancyProperty.should.equal(42);
-      actual.data.links[0].title.should.equal("Hello, Michael");
+      expect(actual.fancyProperty).toBe(42);
+      expect(actual.data.links[0].title).toBe("Hello, Michael");
     });
 
     it('should allow filters (nunjucks) and env', function () {
@@ -85,9 +83,9 @@ describe('graph', function () {
       C._setConfig(config);
       process.env.foo = "foo"
       var actual = C._decorateBody("foo", json);
-      actual.fancyProperty.should.equal(42);
-      actual.data.links[0].title.should.equal("Hello, Tom");
-      actual.data.links[1].title.should.equal(`Hello, ${process.env.foo}`);
+      expect(actual.fancyProperty).toBe(42);
+      expect(actual.data.links[0].title).toBe("Hello, Tom");
+      expect(actual.data.links[1].title).toBe(`Hello, ${process.env.foo}`);
     });
 
     describe("special chars", function () {
@@ -120,7 +118,7 @@ describe('graph', function () {
           });
 
           var actual = C._decorateBody("foo", json);
-          actual.should.be.ok;
+          expect(actual).toBeTruthy();
         });
       });
     });
@@ -183,12 +181,12 @@ describe('graph', function () {
         C._setConfig(config);
         var actualGraph = C._decorateBody("foo", json).results[0].data[0].graph;
         var actualNode = actualGraph.nodes[0];
-        actualNode.fancyProperty.should.equal(42);
-        actualNode.properties.links[0].title.should.equal("Hello, Michael");
+        expect(actualNode.fancyProperty).toBe(42);
+        expect(actualNode.properties.links[0].title).toBe("Hello, Michael");
 
         var actualEdge = actualGraph.relationships[0];
-        actualEdge.fancyEdgeProperty.should.equal(43);
-        actualEdge.properties.links[0].title.should.equal("Description: Describe Me");
+        expect(actualEdge.fancyEdgeProperty).toBe(43);
+        expect(actualEdge.properties.links[0].title).toBe("Description: Describe Me");
       });
     });
   });
@@ -203,7 +201,7 @@ describe('graph', function () {
       };
       C._deepCombine(value_a, value_b);
 
-      value_a.test.should.equal("string2");
+      expect(value_a.test).toBe("string2");
     });
   });
 });
