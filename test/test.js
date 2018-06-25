@@ -2,7 +2,7 @@ var C = require('../routes/graph.js');
 
 describe('graph', function () {
   describe('#decorateBody()', function () {
-    it('should replace urls', function () {
+    test('should replace urls', function () {
       var json = {
         metadata: {
           id: 0
@@ -26,10 +26,15 @@ describe('graph', function () {
       expect(actual.self).toBe("http://graph/node/0");
     });
 
-    it('should add interpolated data', function () {
+    test('should add interpolated data', function () {
       var json = {
-        metadata: { id: 0, labels: ["Person"] },
-        data: { name: "Michael" }
+        metadata: {
+          id: 0,
+          labels: ["Person"]
+        },
+        data: {
+          name: "Michael"
+        }
       };
 
       var config = {
@@ -55,10 +60,15 @@ describe('graph', function () {
       expect(actual.data.links[0].title).toBe("Hello, Michael");
     });
 
-    it('should allow filters (nunjucks) and env', function () {
+    test('should allow filters (nunjucks) and env', function () {
       var json = {
-        metadata: { id: 0, labels: ["Person"] },
-        data: { name: "Michael" }
+        metadata: {
+          id: 0,
+          labels: ["Person"]
+        },
+        data: {
+          name: "Michael"
+        }
       };
 
       var config = {
@@ -90,7 +100,7 @@ describe('graph', function () {
 
     describe("special chars", function () {
       ["\\", "/", "{", "}", ",", ";", "[", "]", "ä", "\n"].forEach(function (value, index, array) {
-        it('should not fail on documents containing ' + value, function () {
+        test('should not fail on documents containing ' + value, function () {
           var json = {
             "columns": ["x"],
             "data": [
@@ -124,7 +134,7 @@ describe('graph', function () {
     });
 
     describe('transactional endpoint', function () {
-      it('should support responses from transactional endpoint', function () {
+      test('should support responses from transactional endpoint', function () {
         // item from graph array
         var json = {
           results: [{
@@ -192,7 +202,7 @@ describe('graph', function () {
   });
 
   describe('#deepCombine()', function () {
-    it('should not stack overflow when trying to combine two strings', function () {
+    test('should not stack overflow when trying to combine two strings', function () {
       var value_a = {
         "test": "string1"
       };
