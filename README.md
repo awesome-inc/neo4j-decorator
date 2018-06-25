@@ -22,7 +22,7 @@ Adjust your `config.yml` and mount it into the container, e.g. in your `docker-c
        - "./decorator/conf.d/:/var/decorator/conf.d/"
     ...
     environment:
-      path_to_config: "var/decorator"
+      path_to_config: "/var/decorator"
 ```
 
 ## Configuration
