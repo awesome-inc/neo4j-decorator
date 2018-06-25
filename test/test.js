@@ -99,7 +99,7 @@ describe('graph', () => {
     });
 
     describe("special chars", () => {
-      ["\\", "/", "{", "}", ",", ";", "[", "]", "ä", "\n"].forEach((value, index, array) => {
+      ["\\", "/", "{", "}", ",", ";", "[", "]", "ä", "\n"].forEach((value, _index, _array) => {
         test('should not fail on documents containing ' + value, () => {
           var json = {
             "columns": ["x"],
