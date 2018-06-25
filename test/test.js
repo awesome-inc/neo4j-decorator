@@ -1,8 +1,8 @@
 var C = require('../routes/graph.js');
 
-describe('graph', function () {
-  describe('#decorateBody()', function () {
-    test('should replace urls', function () {
+describe('graph', () => {
+  describe('#decorateBody()', () => {
+    test('should replace urls', () => {
       var json = {
         metadata: {
           id: 0
@@ -26,7 +26,7 @@ describe('graph', function () {
       expect(actual.self).toBe("http://graph/node/0");
     });
 
-    test('should add interpolated data', function () {
+    test('should add interpolated data', () => {
       var json = {
         metadata: {
           id: 0,
@@ -60,7 +60,7 @@ describe('graph', function () {
       expect(actual.data.links[0].title).toBe("Hello, Michael");
     });
 
-    test('should allow filters (nunjucks) and env', function () {
+    test('should allow filters (nunjucks) and env', () => {
       var json = {
         metadata: {
           id: 0,
@@ -98,9 +98,9 @@ describe('graph', function () {
       expect(actual.data.links[1].title).toBe(`Hello, ${process.env.foo}`);
     });
 
-    describe("special chars", function () {
-      ["\\", "/", "{", "}", ",", ";", "[", "]", "ä", "\n"].forEach(function (value, index, array) {
-        test('should not fail on documents containing ' + value, function () {
+    describe("special chars", () => {
+      ["\\", "/", "{", "}", ",", ";", "[", "]", "ä", "\n"].forEach((value, index, array) => {
+        test('should not fail on documents containing ' + value, () => {
           var json = {
             "columns": ["x"],
             "data": [
@@ -133,8 +133,8 @@ describe('graph', function () {
       });
     });
 
-    describe('transactional endpoint', function () {
-      test('should support responses from transactional endpoint', function () {
+    describe('transactional endpoint', () => {
+      test('should support responses from transactional endpoint', () => {
         // item from graph array
         var json = {
           results: [{
@@ -201,8 +201,8 @@ describe('graph', function () {
     });
   });
 
-  describe('#deepCombine()', function () {
-    test('should not stack overflow when trying to combine two strings', function () {
+  describe('#deepCombine()', () => {
+    test('should not stack overflow when trying to combine two strings', () => {
       var value_a = {
         "test": "string1"
       };
