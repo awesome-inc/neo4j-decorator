@@ -1,5 +1,4 @@
 var fs = require('fs');
-var os = require('os');
 var path = require('path');
 
 var yaml = require('js-yaml');
@@ -14,7 +13,9 @@ function loadConfig() {
   var cfg;
   var fileName = path.resolve(__dirname + '/config.yml');
   cfg = yaml.safeLoad(fs.readFileSync(fileName, 'utf8'));
-  let context = { env: process.env };
+  let context = {
+    env: process.env
+  };
 
   // Interpolate all URLs
   Object.keys(cfg)
@@ -35,9 +36,9 @@ function registerRoutes(app, path) {
   // node does not support default parameters
   path = path || '/graph*';
 
-  app.get(path, function(req, res) {
+  app.get(path, function (req, res) {
     var url = originalUrl(req);
-    client.get(url, function (body, response) {
+    client.get(url, function (body, _response) {
         body = _decorateBody(req, body);
         res.send(body);
       })
@@ -47,7 +48,7 @@ function registerRoutes(app, path) {
       });
   });
 
-  app.post(path, function(req, res) {
+  app.post(path, function (req, res) {
     var url = originalUrl(req);
     var args = {
       data: req.body,
@@ -55,7 +56,7 @@ function registerRoutes(app, path) {
         'Content-Type': 'application/json'
       }
     };
-    client.post(url, args, function (body, response) {
+    client.post(url, args, function (body, _response) {
       body = _decorateBody(req, body);
       res.send(body);
     });
@@ -69,11 +70,11 @@ function registerRoutes(app, path) {
   console.log("Registered route '%s'.", _myRoute);
 
   var configRoute = '/config';
-  app.get(configRoute, function(req, res) {
+  app.get(configRoute, function (req, res) {
     res.send(config);
   });
 
-  app.put(configRoute, function(req, res) {
+  app.put(configRoute, function (req, res) {
     // TODO: parse/validate
     config = req.body;
     saveConfig();
@@ -209,11 +210,10 @@ function deepCombine(a, b) {
     if (a[key]) {
       if (Array.isArray(a[key]) && Array.isArray(b[key])) {
         a[key] = a[key].concat(b[key]);
-      } else if(typeof(b[key]) == "string") {
+      } else if (typeof (b[key]) == "string") {
         // Overwrite a value with b value
         a[key] = b[key];
-      }
-      else {
+      } else {
         deepCombine(a[key], b[key]);
       }
     } else {
@@ -238,7 +238,11 @@ function getDecorations(type, doc, hashMapName) {
   var js = hashMap[type]
   if (js && doc) {
     var cp = JSON.parse(JSON.stringify(js));
-    var context = { config: config, doc: doc, env: process.env };
+    var context = {
+      config: config,
+      doc: doc,
+      env: process.env
+    };
     recursiveReplace(cp, (input) => {
       return nunjucks.renderString(input, context);
     });
