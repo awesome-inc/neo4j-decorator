@@ -1,5 +1,6 @@
+---
 - service: deploy
   type: push
-  tag: ^([0-9]+)\.([0-9]+)\.([0-9]+)$
+  tag: ^master #^([0-9]+)\.([0-9]+)\.([0-9]+)$
   image_name: awesomeinc/neo4j-decorator
   #encrypted_dockercfg_path: dockercfg.encrypted
