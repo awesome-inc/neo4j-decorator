@@ -1,0 +1,6 @@
+- name: install
+  command: yarn
+- name: test
+  command: yarn test
+- name: deploy
+  command: echo foo
