@@ -1,9 +1,6 @@
-- name: install
-  command: yarn
-- name: test
-  command: yarn test
-- name: deploy
-  service: app
+- service: test
+  command: yarn && yarn test
+- service: deploy
   type: push
   tag: master
   image_name: awesomeinc/neo4j-decorator
