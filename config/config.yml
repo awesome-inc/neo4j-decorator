@@ -1,5 +1,5 @@
-server_url: 'http://{{ env.server_url | default("localhost", true) }}:3000/graph'
-neo4j_url: 'http://{{ env.neo4j_url | default("neo4j", true) }}:7474/db/data'
+server_url: '{{ env.DECORATOR_URL | default("http://localhost:3000", true) }}/graph'
+neo4j_url: '{{ env.DECORATOR_NEO4J_URL | default("http://neo4j:7474", true) }}/db/data'
 decorate:
   _all: {}
   _node:
@@ -18,18 +18,8 @@ decorate:
           method: 'POST'
           body:
             query: 'MATCH (u)-[e]-(v) WHERE ID(e)={{doc.metadata.id}} RETURN u,e,v'
-  Person:
-    data:
-      links:
-        - title: "Google '{{doc.data.name}}'..."
-          href: 'https://www.google.de/search?q={{doc.data.name}}'
 
 decorate_transactional:
   _all: {}
   _node: {}
   _edge: {}
-  Person:
-    properties:
-      links:
-        - title: "Google '{{doc.properties.name}}'"
-          href: 'https://www.google.de/search?q={{doc.properties.name}}'

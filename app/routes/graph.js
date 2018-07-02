@@ -1,58 +1,53 @@
-var Client = require('node-rest-client').Client;
-var nunjucks = require('nunjucks');
-var client = new Client();
-
-var _myRoute = '';
+const Client = require('node-rest-client').Client;
+const client = new Client;
+const nunjucks = require('nunjucks');
 const CONF = require('./config');
 
-function registerRoutes(app, path) {
-  // node does not support default parameters
-  path = path || '/graph*';
-
+function register(app) {
+  const path = '/graph/.+';
   app.get(path, (req, res) => {
-    var url = originalUrl(req);
+    const url = _originalUrl(req);
     client.get(url, (body, _response) => {
-        body = _decorateBody(req, body);
-        res.send(body);
+        console.debug(req);
+        res.send(_decorateBody(req, body));
       })
-      .on('error', (err) => {
+      .on('error', err => {
+        console.error('something went wrong on the request', err.request.options);
         res.send(err);
-        console.log('something went wrong on the request', err.request.options);
       });
   });
 
   app.post(path, (req, res) => {
-    var url = originalUrl(req);
-    var args = {
+    const url = _originalUrl(req);
+    const args = {
       data: req.body,
       headers: {
         'Content-Type': 'application/json'
       }
     };
     client.post(url, args, (body, _response) => {
-      body = _decorateBody(req, body);
-      res.send(body);
-    });
+        res.send(_decorateBody(req, body));
+      })
+      .on('error', err => {
+        console.error('something went wrong on the request', err.request.options);
+        res.send(err);
+      });
   });
 
-  _myRoute = path.replace(new RegExp('[{*}]', 'gi'), '');
-
-  console.log("server_url: '%s'", CONF._getConfig().server_url);
-  console.log("neo4j_url: '%s'", CONF._getConfig().neo4j_url);
-
-  console.log("Registered route '%s'.", _myRoute);
+  const config = CONF._getConfig();
+  ['server_url', 'neo4j_url'].forEach(key => console.info(`${key}: ${config[key]}`));
 };
 
 function _decorateBody(req, json) {
-  var src = serverUrl(req);
-  var dst = decoratedUrl(req);
-  replaceUrls(json, src, dst);
+  var src = _serverUrl(req);
+  var dst = _decoratedUrl(req);
+  _replaceUrls(json, src, dst);
   json = _decorateDocument(json);
   return json;
 }
 
-function replaceUrls(json, src, dst) {
-  recursiveReplace(json, (input) => {
+function _replaceUrls(json, src, dst) {
+  _recursiveReplace(json, (input) => {
     return input.replace(src, dst);
   });
 }
@@ -157,13 +152,13 @@ function _decorateDocumentTransactional(json) {
 }
 
 function _decorateDocumentFor(type, json, hashMapName) {
-  var decorations = getDecorations(type, json, hashMapName);
+  var decorations = _getDecorations(type, json, hashMapName);
   if (decorations) {
-    deepCombine(json, decorations);
+    _deepCombine(json, decorations);
   }
 }
 
-function deepCombine(a, b) {
+function _deepCombine(a, b) {
   for (var key in b) {
     if (a[key]) {
       if (Array.isArray(a[key]) && Array.isArray(b[key])) {
@@ -172,7 +167,7 @@ function deepCombine(a, b) {
         // Overwrite a value with b value
         a[key] = b[key];
       } else {
-        deepCombine(a[key], b[key]);
+        _deepCombine(a[key], b[key]);
       }
     } else {
       a[key] = b[key];
@@ -180,17 +175,17 @@ function deepCombine(a, b) {
   }
 }
 
-function recursiveReplace(iterable, callback) {
+function _recursiveReplace(iterable, callback) {
   for (var idx in iterable) {
     if (typeof (iterable[idx]) == "string") {
       iterable[idx] = callback(iterable[idx]);
     } else if (typeof (iterable) == "object" || Array.isArray(iterable)) {
-      recursiveReplace(iterable[idx], callback);
+      _recursiveReplace(iterable[idx], callback);
     }
   }
 }
 
-function getDecorations(type, doc, hashMapName) {
+function _getDecorations(type, doc, hashMapName) {
   hashMapName = hashMapName || "decorate";
   var hashMap = CONF._getConfig()[hashMapName];
   var js = hashMap[type]
@@ -201,38 +196,38 @@ function getDecorations(type, doc, hashMapName) {
       doc: doc,
       env: process.env
     };
-    recursiveReplace(cp, (input) => {
+    _recursiveReplace(cp, (input) => {
       return nunjucks.renderString(input, context);
     });
   }
   return cp;
 }
 
-function serverUrl(req) {
-  return CONF._getConfig().neo4j_url || getServerUrl(req);
+function _serverUrl(req) {
+  return CONF._getConfig().neo4j_url || _getServerUrl(req);
 }
 
-function decoratedUrl(req) {
-  return CONF._getConfig().server_url || getDecoratedUrl(req);
+function _decoratedUrl(req) {
+  return CONF._getConfig().server_url || _getDecoratedUrl(req);
 }
 
-function getDecoratedUrl(req) {
+function _getDecoratedUrl(req) {
   var s = req.server.info;
   return s.uri + _myRoute;
 }
 
-function getServerUrl(req) {
+function _getServerUrl(req) {
   var s = req.server.info;
   return s.protocol + '://' + s.host + ':7474/db/data';
 }
 
-function originalUrl(req) {
-  return serverUrl(req) + req.path.replace(_myRoute, '');
+function _originalUrl(req) {
+  return _serverUrl(req) + req.path.replace(_myRoute, '');
 }
 
 module.exports = {
-  registerRoutes: registerRoutes,
-  _decorateBody: _decorateBody,
-  _decorateDocument: _decorateDocument,
-  _deepCombine: deepCombine
-}
+  register,
+  _decorateBody,
+  _decorateDocument,
+  _deepCombine
+};

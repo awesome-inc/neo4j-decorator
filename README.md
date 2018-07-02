@@ -14,15 +14,11 @@ A decorator for the Neo4j REST Api.
 docker run awesomeinc/neo4j-decorator
 ```
 
-Adjust your `config.yml` and mount it into the container, e.g. in your `docker-compose.yml`. You can also separate your config into different files. Just mount them into `/var/decorator/conf.d/`. You can change the location via the environment variable `path_to_config`.
+Mount your configuration into the container, e.g. in your `docker-compose.yml`.
 
 ```yml
     volumes:
-       - "./decorator/config.yml:/usr/src/app/config.yml"
-       - "./decorator/conf.d/:/var/decorator/conf.d/"
-    ...
-    environment:
-      path_to_config: "/var/decorator"
+       - "./decorator/config/:/etc/decorator/config
 ```
 
 ## Configuration
@@ -60,14 +56,16 @@ decorate_transactional:
 
 This decorates a default action *Expand...* to all nodes and edges.
 
+Place additional configuration extensions (yml) as drop-ins into `/etc/decorator/conf.d` (see [test/config](./test/config)).
+
 ### Templating
 
 Templating is based on [Nunjucks](https://mozilla.github.io/nunjucks/) so can use any [Builtin Filters](https://mozilla.github.io/nunjucks/templating.html#builtin-filters).
 
 The template context is
 
-```json
-  var context = {
+```javascript
+  const context = {
     config: config,
     doc: doc,
     env: process.env
@@ -81,11 +79,26 @@ where
 - `env` is the process environment (on the server).
 
 #### Special Case
+
 All top-level keys from the `config.yml` that end in `_url` can also be interpolated.
 
 ## Docs
 
-It is possible to store and retrieve custom documents, e.g. in order to store custom configurations, templates for Cypher queries, etc. Documents can be retrieved via `GET` from `<decorator-url>/docs/:doc` with **:doc** being the filename. The same URL can be used in conjunction with `PUT` to store documents.
+It is possible to make custom data available via `/docs/:key`. For instance, have a yml-file `/etc/decorator/docs.d/my-config.yml` with
+
+```yml
+---
+myconfig:
+  myvalue1: foo
+```
+
+This can be fetched using `GET /docs/myconfig` returning
+
+```json
+{
+  "myvalue1": "foo"
+}
+```
 
 ## Examples
 

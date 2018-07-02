@@ -1,4 +1,4 @@
-FROM node:10.1.0-alpine
+FROM node:10.5.0-alpine
 
 # cf.:
 # - https://docs.docker.com/docker-cloud/builds/advanced/#environment-variables-for-building-and-testing
@@ -26,17 +26,18 @@ LABEL author="Awesome Incremented <marcel.koertgen@gmail.com>"\
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-COPY package.json yarn.lock /usr/src/app/
+COPY package.json yarn.lock ./
 
 ARG http_proxy=
 ARG https_proxy=
 RUN yarn
 
-COPY . /usr/src/app
-
-COPY conf.d /var/decorator
+COPY . ./
 
 RUN yarn test
+
+ENV DECORATOR_CONFIG /etc/decorator
+COPY config/ ${DECORATOR_CONFIG}
 
 EXPOSE 3000
 

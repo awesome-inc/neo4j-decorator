@@ -1,4 +1,9 @@
-version: '3'
+version: '3.4'
+
+x-proxy: &proxy
+  http_proxy: ${http_proxy}
+  https_proxy: ${https_proxy}
+  no_proxy: ${no_proxy}
 
 volumes:
   neo4j-volume:   # neo4j data
@@ -8,37 +13,22 @@ services:
     build:
       context: ./
       args:
-        http_proxy: ${http_proxy}
-        https_proxy: ${https_proxy}
-        no_proxy: ${no_proxy}
+        <<: *proxy
     environment:
-      server_url: ${server_url:-localhost}
-      neo4j_url: ${neo4j_url:-neo4j}
-      path_to_config: ${path_to_config:-/var/decorator}
-    ports:
-       - "3000:3000"
-    depends_on:
-       - neo4j
-    volumes:
-      - "./config.yml:/usr/src/app/config.yml"
-      - "./routes/docs/:/usr/src/app/routes/docs/"
-      - "./conf.d/:/var/decorator/conf.d/"
+      DECORATOR_CONFIG: ${DECORATOR_CONFIG:-/etc/decorator}
+      DECORATOR_URL: ${DECORATOR_URL:-http://localhost:3000}
+      DECORATOR_NEO4J_URL: ${DECORATOR_NEO4J_URL:-http://neo4j:7474}
+    ports: [ '3000:3000' ]
+    depends_on: [ neo4j ]
+    volumes: [ './config:/etc/decorator' ]
 
   neo4j:
     build:
       context: ./neo4j
       args:
-        http_proxy: ${http_proxy}
-        https_proxy: ${https_proxy}
-        no_proxy: ${no_proxy}
-    volumes:
-      - neo4j-volume:/data
-    ports:
-      - "7474:7474"
-      - "7473:7473"
-      - "7687:7687"
+        <<: *proxy
+    volumes: [ 'neo4j-volume:/data' ]
+    ports: [ '7474:7474', '7473:7473', '7687:7687' ]
     environment:
+      <<: *proxy
       NEO4J_AUTH: none
-      http_proxy: ${http_proxy}
-      https_proxy: ${https_proxy}
-      no_proxy: ${no_proxy}

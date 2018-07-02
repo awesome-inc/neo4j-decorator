@@ -1,23 +1,14 @@
-var GRAPH = require('../routes/graph');
-var CONFIG = require('../routes/config');
-
-describe('app', () => {
-  test('should load config', () => {
-    const conf = CONFIG._loadConfig();
-    // Assert data of top-level config is still present
-    expect(conf.decorate._node).toBeDefined();
-    expect(conf.decorate._edge).toBeDefined();
-    // Assert data of configs from './conf.d' is deep-merged into config
-    const person = conf.decorate.Person;
-    expect(person).toBeDefined();
-    expect(person.data.links.length).toBe(2);
-  });
+require('dotenv').config({
+  path: 'test/.env'
 });
+
+const GRAPH = require('../app/routes/graph');
+const CONFIG = require('../app/routes/config');
 
 describe('graph', () => {
   describe('#decorateBody()', () => {
     test('should replace urls', () => {
-      var json = {
+      const json = {
         metadata: {
           id: 0
         },
@@ -27,7 +18,7 @@ describe('graph', () => {
         }
       };
 
-      var config = {
+      const config = {
         server_url: 'http://graph',
         neo4j_url: 'http://neo4j',
         decorate: {
@@ -36,12 +27,12 @@ describe('graph', () => {
       }
 
       CONFIG._setConfig(config);
-      var actual = GRAPH._decorateBody("foo", json);
+      const actual = GRAPH._decorateBody("foo", json);
       expect(actual.self).toBe("http://graph/node/0");
     });
 
     test('should add interpolated data', () => {
-      var json = {
+      const json = {
         metadata: {
           id: 0,
           labels: ["Person"]
@@ -51,7 +42,7 @@ describe('graph', () => {
         }
       };
 
-      var config = {
+      const config = {
         server_url: 'http://graph',
         neo4j_url: 'http://neo4j',
         decorate: {
@@ -69,13 +60,13 @@ describe('graph', () => {
       }
 
       CONFIG._setConfig(config);
-      var actual = GRAPH._decorateBody("foo", json);
+      const actual = GRAPH._decorateBody("foo", json);
       expect(actual.fancyProperty).toBe(42);
       expect(actual.data.links[0].title).toBe("Hello, Michael");
     });
 
     test('should allow filters (nunjucks) and env', () => {
-      var json = {
+      const json = {
         metadata: {
           id: 0,
           labels: ["Person"]
@@ -85,7 +76,7 @@ describe('graph', () => {
         }
       };
 
-      var config = {
+      const config = {
         server_url: 'http://graph',
         neo4j_url: 'http://neo4j',
         decorate: {
@@ -141,7 +132,7 @@ describe('graph', () => {
             }
           });
 
-          var actual = GRAPH._decorateBody("foo", json);
+          const actual = GRAPH._decorateBody("foo", json);
           expect(actual).toBeTruthy();
         });
       });
@@ -150,7 +141,7 @@ describe('graph', () => {
     describe('transactional endpoint', () => {
       test('should support responses from transactional endpoint', () => {
         // item from graph array
-        var json = {
+        const json = {
           results: [{
             data: [{
               graph: {
@@ -176,8 +167,7 @@ describe('graph', () => {
           }]
         };
 
-
-        var config = {
+        const config = {
           server_url: 'http://graph',
           neo4j_url: 'http://neo4j',
           decorate_transactional: {
@@ -203,12 +193,12 @@ describe('graph', () => {
         }
 
         CONFIG._setConfig(config);
-        var actualGraph = GRAPH._decorateBody("foo", json).results[0].data[0].graph;
-        var actualNode = actualGraph.nodes[0];
+        const actualGraph = GRAPH._decorateBody("foo", json).results[0].data[0].graph;
+        const actualNode = actualGraph.nodes[0];
         expect(actualNode.fancyProperty).toBe(42);
         expect(actualNode.properties.links[0].title).toBe("Hello, Michael");
 
-        var actualEdge = actualGraph.relationships[0];
+        const actualEdge = actualGraph.relationships[0];
         expect(actualEdge.fancyEdgeProperty).toBe(43);
         expect(actualEdge.properties.links[0].title).toBe("Description: Describe Me");
       });
@@ -217,10 +207,10 @@ describe('graph', () => {
 
   describe('#deepCombine()', () => {
     test('should not stack overflow when trying to combine two strings', () => {
-      var value_a = {
+      const value_a = {
         "test": "string1"
       };
-      var value_b = {
+      const value_b = {
         "test": "string2"
       };
       GRAPH._deepCombine(value_a, value_b);

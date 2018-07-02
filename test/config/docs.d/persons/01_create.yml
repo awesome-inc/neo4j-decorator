@@ -1,0 +1,4 @@
+---
+templates:
+  - name: Create Person
+    template: 'CREATE (person:Person {name: "<Name_of_Person>"}) RETURN person'

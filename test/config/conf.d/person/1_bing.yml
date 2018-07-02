@@ -1,0 +1,6 @@
+decorate:
+  Person:
+    data:
+      links:
+        - title: "Bing '{{doc.data.name}}'..."
+          href: 'https://www.bing.de/search?q={{doc.data.name}}'
