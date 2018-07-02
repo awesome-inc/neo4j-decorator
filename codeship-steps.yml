@@ -1,5 +1,5 @@
 - service: deploy
-  type: bulid #push
+  type: build #push
   tag: ^([0-9]+)\.([0-9]+)\.([0-9]+)$
   image_name: awesomeinc/neo4j-decorator
   #encrypted_dockercfg_path: dockercfg.encrypted
