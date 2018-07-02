@@ -2,4 +2,4 @@
   type: push
   tag: master
   image_name: awesomeinc/neo4j-decorator
-  encrypted_dockercfg_path: dockercfg.encrypted
+  #encrypted_dockercfg_path: dockercfg.encrypted
