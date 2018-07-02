@@ -1,5 +1,5 @@
 - service: test
-  command: yarn && yarn test
+  type: build
 - service: deploy
   type: push
   tag: master
