@@ -1,6 +1,4 @@
 ---
-  test:
-    image: "node:10.5.0-alpine"
   deploy:
     build:
       image: "awesomeinc/neo4j-decorator"
