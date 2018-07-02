@@ -1,5 +1,4 @@
 #!/bin/sh
-DOCKER_TAG=${TRAVIS_TAG}
 IMAGE_NAME=awesomeinc/neo4j-decorator:${DOCKER_TAG}
 # VCS_REF=${TRAVIS_COMMIT}
 VCS_REF=`git rev-parse --short HEAD`
