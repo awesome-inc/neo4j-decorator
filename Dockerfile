@@ -30,11 +30,9 @@ COPY package.json yarn.lock ./
 
 ARG http_proxy=
 ARG https_proxy=
-RUN yarn
+RUN yarn --prod
 
 COPY . ./
-
-RUN yarn test
 
 ENV DECORATOR_CONFIG /etc/decorator
 COPY config/ ${DECORATOR_CONFIG}
