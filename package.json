@@ -1,6 +1,6 @@
 {
   "name": "neo4j-decorator",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A decorator for the Neo4j REST Api",
   "main": "server.js",
   "license": "MIT",
