@@ -3,4 +3,8 @@
 - name: test
   command: yarn test
 - name: deploy
-  command: echo foo
+  service: app
+  type: push
+  tag: master
+  image_name: awesomeinc/neo4j-decorator
+  encrypted_dockercfg_path: dockercfg.encrypted
