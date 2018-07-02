@@ -1,5 +1,0 @@
----
-  deploy:
-    build:
-      image: "awesomeinc/neo4j-decorator"
-      dockerfile: "Dockerfile"

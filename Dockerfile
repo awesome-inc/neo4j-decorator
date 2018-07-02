@@ -1,16 +1,3 @@
-FROM node:10.5.0-alpine as test
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
-
-COPY package.json yarn.lock ./
-
-ARG http_proxy=
-ARG https_proxy=
-RUN yarn
-
-COPY . ./
-RUN yarn test
-
 FROM node:10.5.0-alpine
 
 # cf.:
@@ -43,6 +30,7 @@ COPY package.json yarn.lock ./
 
 ARG http_proxy=
 ARG https_proxy=
+#RUN yarn && yarn test && rm -Rf ./node_modules
 RUN yarn --prod
 
 COPY . ./
