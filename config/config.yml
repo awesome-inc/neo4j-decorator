@@ -1,5 +1,5 @@
 server_url: '{{ env.DECORATOR_URL | default("http://localhost:3000", true) }}/graph'
-neo4j_url: '{{ env.DECORATOR_NEO4J_URL | default("http://neo4j:7474", true) }}/db/data'
+neo4j_url: '{{ env.DECORATOR_NEO4J_URL | default("http://localhost:7474", true) }}/db/data'
 decorate:
   _all: {}
   _node:
