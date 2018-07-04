@@ -1,6 +1,6 @@
 {
   "name": "neo4j-decorator",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A decorator for the Neo4j REST Api",
   "main": "server.js",
   "license": "MIT",
@@ -21,9 +21,11 @@
   "devDependencies": {
     "dotenv": "^6.0.0",
     "jest": "^23.1.0",
+    "nodemon": "^1.17.5",
     "supertest": "^3.1.0"
   },
   "scripts": {
+    "dev": "nodemon server.js",
     "test": "jest",
     "c-test": "jest --watchAll"
   }

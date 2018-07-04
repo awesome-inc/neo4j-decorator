@@ -3,8 +3,10 @@ const client = new Client;
 const nunjucks = require('nunjucks');
 const CONF = require('./config');
 
+const _myRoute = '/graph';
+
 function register(app) {
-  const path = '/graph/.+';
+  const path = '/graph*';
   app.get(path, (req, res) => {
     const url = _originalUrl(req);
     client.get(url, (body, _response) => {
