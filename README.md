@@ -1,12 +1,15 @@
 # neo4j-decorator
 
-[![Build status](https://travis-ci.org/awesome-inc/neo4j-decorator.svg?branch=master)](https://travis-ci.org/awesome-inc/neo4j-decorator/)
-[![GitHub issues](https://img.shields.io/github/issues/awesome-inc/neo4j-decorator.svg "GitHub issues")](https://github.com/awesome-inc/neo4j-decorator)
-[![GitHub stars](https://img.shields.io/github/stars/awesome-inc/neo4j-decorator.svg "GitHub stars")](https://github.com/awesome-inc/neo4j-decorator)
+[![Docker build](https://img.shields.io/docker/build/awesomeinc/neo4j-decorator.svg?logo=docker)](https://hub.docker.com/r/awesomeinc/neo4j-decorator/builds/)
+[![Docker automated](https://img.shields.io/docker/automated/awesomeinc/neo4j-decorator.svg?logo=docker)](https://travis-ci.org/awesome-inc/neo4j-decorator/)
+[![Docker stars](https://img.shields.io/docker/stars/awesomeinc/neo4j-decorator.svg)](https://travis-ci.org/awesome-inc/neo4j-decorator/)
+[![Docker pulls](https://img.shields.io/docker/pulls/awesomeinc/neo4j-decorator.svg?logo=docker)](https://travis-ci.org/awesome-inc/neo4j-decorator/)
+
+[![Build status](https://img.shields.io/travis/awesome-inc/neo4j-decorator.svg?logo=travis)](https://travis-ci.org/awesome-inc/neo4j-decorator/)
+[![GitHub issues](https://img.shields.io/github/issues/awesome-inc/neo4j-decorator.svg?logo=github "GitHub issues")](https://github.com/awesome-inc/neo4j-decorator)
+[![GitHub stars](https://img.shields.io/github/stars/awesome-inc/neo4j-decorator.svg?logo=github "GitHub stars")](https://github.com/awesome-inc/neo4j-decorator)
 
 A decorator for the Neo4j REST Api.
-
-[![dockeri.co](http://dockeri.co/image/awesomeinc/neo4j-decorator)](https://hub.docker.com/r/awesomeinc/neo4j-decorator/)
 
 ## Using the docker image
 
@@ -139,3 +142,52 @@ POST http://localhost:3000/graph/transaction/commit
   ]
 }
 ```
+
+## Neo4j and GraphQL
+
+This repository contains a standard neo4j community service, customized with the following plugins
+
+- [APOC](https://github.com/neo4j-contrib/neo4j-apoc-procedures)
+- [GraphQL](https://github.com/neo4j-graphql/neo4j-graphql) plugins
+
+To get a feel on GraphQL with neo4j, first hit the neo4 browser at
+[http://localhost:7474](http://localhost:7474) and create some sample data
+
+```cypher
+:play movie-graph
+```
+
+Next add a sample GraphQL schema (cf.: [Uploading a GraphQL Schema](https://github.com/neo4j-graphql/neo4j-graphql#uploading-a-graphql-schema))
+
+```cypher
+CALL graphql.idl('
+type Movie  {
+  title: String!
+  released: Int
+  actors: [Person] @relation(name:"ACTED_IN",direction:IN)
+}
+type Person {
+  name: String!
+  born: Int
+  movies: [Movie] @relation(name:"ACTED_IN")
+}
+')
+```
+
+Finally try an example graphql query
+
+```graphiql
+{ Person(name:"Kevin Bacon") {
+    name
+    born
+    movies {
+      title
+      released
+    }
+  }
+}
+```
+
+Here is a screenshot using the [GraphQL Plaground](https://github.com/prisma/graphql-playground).
+
+![GraphQL Playground](img/graphql-playground.jpg)

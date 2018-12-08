@@ -31,7 +31,8 @@ COPY package.json yarn.lock ./
 ARG http_proxy=
 ARG https_proxy=
 #RUN yarn && yarn test && rm -Rf ./node_modules
-RUN yarn --prod
+# node:11.4.0 is too recent for nunjucks (<= 11.1.0), so we ignore engines for now
+RUN yarn --prod --ignore-engines
 
 COPY . ./
 

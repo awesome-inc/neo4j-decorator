@@ -1,8 +1,5 @@
-#!/bin/bash
-
-set -e
-
-if [[ ${http_proxy:+1} ]]; then 
+#!/bin/bash -eu
+if [[ ${http_proxy:+1} ]]; then
   echo
   echo "Configure proxy '${http_proxy}' ..."
   proxyHost=${http_proxy//"http://"}
@@ -15,4 +12,4 @@ if [[ ${http_proxy:+1} ]]; then
   # https://github.com/neo4j-contrib/neo4j-apoc-procedures/issues/207#issuecomment-260083568
   export dbms_jvm_additional="-Dhttp.proxyHost=${proxyHost} -Dhttp.proxyPort=${proxyPort} -Dhttps.proxyHost=${proxyHost} -Dhttps.proxyPort=${proxyPort} -Dhttp.nonProxyHosts=${nonProxyHosts} -Dhttps.nonProxyHosts=${nonProxyHosts}"
   echo "dbms_jvm_additional = ${dbms_jvm_additional}"
-fi 
+fi

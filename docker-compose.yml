@@ -6,7 +6,7 @@ x-proxy: &proxy
   no_proxy: ${no_proxy}
 
 volumes:
-  neo4j-volume:   # neo4j data
+  neo4j-volume: # neo4j data
 
 services:
   decorator:

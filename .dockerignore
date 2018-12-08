@@ -8,3 +8,4 @@ Dockerfile
 .vs/
 neo4j/*
 hooks/*
+img/*
