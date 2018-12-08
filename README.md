@@ -2,7 +2,7 @@
 
 [![Docker build](https://img.shields.io/docker/build/awesomeinc/neo4j-decorator.svg?logo=docker)](https://hub.docker.com/r/awesomeinc/neo4j-decorator/builds/)
 [![Docker automated](https://img.shields.io/docker/automated/awesomeinc/neo4j-decorator.svg?logo=docker)](https://travis-ci.org/awesome-inc/neo4j-decorator/)
-[![Docker stars](https://img.shields.io/docker/stars/awesomeinc/neo4j-decorator.svg)](https://travis-ci.org/awesome-inc/neo4j-decorator/)
+[![Docker stars](https://img.shields.io/docker/stars/awesomeinc/neo4j-decorator.svg?logo=docker)](https://travis-ci.org/awesome-inc/neo4j-decorator/)
 [![Docker pulls](https://img.shields.io/docker/pulls/awesomeinc/neo4j-decorator.svg?logo=docker)](https://travis-ci.org/awesome-inc/neo4j-decorator/)
 
 [![Build status](https://img.shields.io/travis/awesome-inc/neo4j-decorator.svg?logo=travis)](https://travis-ci.org/awesome-inc/neo4j-decorator/)
