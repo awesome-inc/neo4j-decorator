@@ -9,24 +9,24 @@
     "url": "https://github.com/awesome-inc/neo4j-decorator.git"
   },
   "dependencies": {
-    "body-parser": "^1.18.2",
-    "cors": "^2.8.4",
-    "deepmerge": "^2.1.1",
-    "express": "^4.16.2",
-    "glob": "^7.1.2",
-    "js-yaml": "3.10.0",
-    "node-rest-client": "3.1.0",
-    "nunjucks": "^3.0.1"
+    "body-parser": "^1",
+    "cors": "^2",
+    "deepmerge": "^2",
+    "express": "^4",
+    "glob": "^7",
+    "js-yaml": "3",
+    "node-rest-client": "3",
+    "nunjucks": "^3"
   },
   "devDependencies": {
-    "dotenv": "^6.0.0",
-    "jest": "^23.1.0",
-    "nodemon": "^1.17.5",
-    "supertest": "^3.1.0"
+    "dotenv": "^6",
+    "jest": "^23",
+    "nodemon": "^1",
+    "supertest": "^3"
   },
   "scripts": {
     "dev": "nodemon server.js",
     "test": "jest",
-    "c-test": "jest --watchAll"
+    "test:watch": "jest --watchAll"
   }
 }
