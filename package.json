@@ -14,7 +14,7 @@
     "deepmerge": "^2",
     "express": "^4",
     "glob": "^7",
-    "js-yaml": "3",
+    "js-yaml": "^3.13.1",
     "node-rest-client": "3",
     "nunjucks": "^3"
   },
