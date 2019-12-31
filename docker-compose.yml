@@ -23,12 +23,17 @@ services:
     volumes: [ './config:/etc/decorator' ]
 
   neo4j:
-    build:
-      context: ./neo4j
-      args:
-        <<: *proxy
-    volumes: [ 'neo4j-volume:/data' ]
+    #build:
+    #  context: ./neo4j
+    #  args:
+    #    <<: *proxy
+    image: neo4j:3.5.14
     ports: [ '7474:7474', '7473:7473', '7687:7687' ]
+    volumes: 
+      - neo4j-volume:/data
+      - ./neo4j/plugins/:/var/lib/neo4j/plugins
     environment:
       <<: *proxy
       NEO4J_AUTH: none
+      NEO4J_dbms_security_procedures_unrestricted: "\\*"
+      #NEO4J_dbms_unmanaged__extension__classes: "org.neo4j.graphql=/graphql"

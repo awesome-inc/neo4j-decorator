@@ -24,6 +24,59 @@ Mount your configuration into the container, e.g. in your `docker-compose.yml`.
        - "./decorator/config/:/etc/decorator/config
 ```
 
+See the [docker-compose.yml](docker-compose.yml) file on how to add neo4j and plugins to the mix, e.g.
+
+- [APOC](https://github.com/neo4j-contrib/neo4j-apoc-procedures)
+- [Algorithms](https://github.com/neo4j-contrib/neo4j-graph-algorithms)
+- [GraphQL](https://github.com/neo4j-graphql/neo4j-graphql)
+- [Streams](https://github.com/neo4j-contrib/neo4j-streams) (e.g. Kafka / Kafka Connect)
+
+Finally, hit the decorated neo4j REST API at [http://localhost:3000/graph/](http://localhost:3000/graph/)
+
+```json
+// http://localhost:3000/graph/
+{
+  "extensions": { },
+  "node": "http://localhost:3000/graph/node",
+  "relationship": "http://localhost:3000/graph/relationship",
+  "node_index": "http://localhost:3000/graph/index/node",
+  "relationship_index": "http://localhost:3000/graph/index/relationship",
+  "extensions_info": "http://localhost:3000/graph/ext",
+  "relationship_types": "http://localhost:3000/graph/relationship/types",
+  "batch": "http://localhost:3000/graph/batch",
+  "cypher": "http://localhost:3000/graph/cypher",
+  "indexes": "http://localhost:3000/graph/schema/index",
+  "constraints": "http://localhost:3000/graph/schema/constraint",
+  "transaction": "http://localhost:3000/graph/transaction",
+  "node_labels": "http://localhost:3000/graph/labels",
+  "neo4j_version": "3.5.14"
+}
+```
+
+When accessing the first node using [http://localhost:3000/graph/node/0](http://localhost:3000/graph/node/0) you will see the example decorations in the `links` section
+
+```json
+// http://localhost:3000/graph/node/0
+{
+  ...
+  "data": {
+    ...
+    "links": [
+      {
+        "title": "Expand...",
+        "href": "http://localhost:3000/graph/cypher",
+        "method": "POST",
+        "body": {
+          "query": "MATCH (u)-[e]-(v) WHERE ID(u)=0 RETURN u,e,v"
+        }
+      }
+    ]
+  }
+}
+```
+
+Note how a generic HATEOAS-compatible client may easily auto-discover the custom links and provide them as dynamically executable actions to the user.
+
 ## Configuration
 
 The motivation is to decorate some new links (or actions) into nodes & edges (HATEOAS Style).
@@ -145,10 +198,10 @@ POST http://localhost:3000/graph/transaction/commit
 
 ## Neo4j and GraphQL
 
-This repository contains a standard neo4j community service, customized with the following plugins
+This repository contains a standard neo4j community service, which can e.g. be customized with the following plugins
 
 - [APOC](https://github.com/neo4j-contrib/neo4j-apoc-procedures)
-- [GraphQL](https://github.com/neo4j-graphql/neo4j-graphql) plugins
+- [GraphQL](https://github.com/neo4j-graphql/neo4j-graphql)
 
 To get a feel on GraphQL with neo4j, first hit the neo4 browser at
 [http://localhost:7474](http://localhost:7474) and create some sample data
